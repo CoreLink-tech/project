@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZENTUROCAPITAL - Best Trading Platform</title>
+<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c14;
+    --bg2: #0d1220;
+    --card: #111827;
+    --border: rgba(255,255,255,0.07);
+    --gold: #f5c842;
+    --gold2: #e8a816;
+    --green: #22d3a5;
+    --blue: #3b82f6;
+    --text: #e8eaf0;
+    --muted: #8b95a8;
+    --radius: 16px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Syne', sans-serif;
+    line-height: 1.2;
+  }
+
+  a { text-decoration: none; color: inherit; }
+
+  img { max-width: 100%; }
+
+  /* PRELOADER */
+  #preloader {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+  }
+  #preloader.hide { opacity: 0; visibility: hidden; }
+  .preloader-ring {
+    width: 60px; height: 60px;
+    border: 3px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* TICKER */
+  .ticker-bar {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    padding: 8px 0;
+  }
+  .ticker-inner {
+    display: flex; gap: 48px;
+    animation: ticker 30s linear infinite;
+    white-space: nowrap;
+    width: max-content;
+  }
+  .ticker-inner:hover { animation-play-state: paused; }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .ticker-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 500;
+  }
+  .ticker-item .symbol { color: var(--gold); font-weight: 700; }
+  .ticker-item .price { color: var(--text); }
+  .ticker-item .change { font-size: 12px; }
+  .ticker-item .up { color: var(--green); }
+  .ticker-item .down { color: #f87171; }
+
+  /* NAVBAR */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(8,12,20,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+  }
+  .nav-inner {
+    max-width: 1280px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 22px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 900; color: #080c14;
+  }
+  .nav-links {
+    display: flex; align-items: center; gap: 6px;
+    list-style: none;
+  }
+  .nav-links a {
+    padding: 8px 14px;
+    font-size: 14px; font-weight: 500;
+    color: var(--muted);
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+  .nav-links .dropdown { position: relative; }
+  .nav-links .dropdown-menu {
+    display: none;
+    position: absolute; top: calc(100% + 8px); left: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px;
+    min-width: 180px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  }
+  .nav-links .dropdown:hover .dropdown-menu { display: block; }
+  .nav-links .dropdown-menu a {
+    display: block; padding: 10px 14px;
+    border-radius: 8px; color: var(--muted); font-size: 14px;
+  }
+  .nav-links .dropdown-menu a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+  .nav-cta {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 22px; border-radius: 10px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer; border: none;
+    transition: all 0.25s;
+  }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: #080c14;
+  }
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(245,200,66,0.3); }
+  .btn-green {
+    background: linear-gradient(135deg, var(--green), #16a07a);
+    color: #080c14;
+  }
+  .btn-green:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(34,211,165,0.3); }
+
+  /* HAMBURGER */
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: 0.3s; }
+
+  /* HERO */
+  .hero {
+    min-height: 90vh;
+    display: flex; align-items: center;
+    position: relative; overflow: hidden;
+    padding: 80px 40px;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 60% at 70% 50%, rgba(245,200,66,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(34,211,165,0.05) 0%, transparent 60%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 80%);
+  }
+  .hero-inner {
+    max-width: 1280px; margin: 0 auto; width: 100%;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    position: relative; z-index: 1;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(245,200,66,0.1);
+    border: 1px solid rgba(245,200,66,0.25);
+    border-radius: 50px; padding: 6px 16px;
+    font-size: 13px; color: var(--gold);
+    margin-bottom: 24px;
+  }
+  .hero-badge .dot {
+    width: 7px; height: 7px; background: var(--gold);
+    border-radius: 50%; animation: pulse 1.5s ease infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+  .hero h1 {
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800; line-height: 1.1;
+    margin-bottom: 24px;
+  }
+  .hero h1 span { color: var(--gold); }
+  .hero p {
+    color: var(--muted); font-size: 18px;
+    max-width: 520px; margin-bottom: 40px;
+  }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+  .hero-stats {
+    display: flex; gap: 32px; margin-top: 60px; flex-wrap: wrap;
+  }
+  .hero-stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 800; color: var(--gold);
+  }
+  .hero-stat-label { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  /* DASHBOARD MOCKUP */
+  .hero-visual {
+    position: relative;
+  }
+  .dashboard-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .dash-header {
+    background: #0d1220; padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .dash-dots { display: flex; gap: 6px; }
+  .dash-dots span {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .dash-dots span:nth-child(1) { background: #f87171; }
+  .dash-dots span:nth-child(2) { background: #fbbf24; }
+  .dash-dots span:nth-child(3) { background: var(--green); }
+  .dash-title { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .dash-body { padding: 20px; }
+  .dash-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;
+  }
+  .dash-mini-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px;
+  }
+  .dash-mini-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .dash-mini-val {
+    font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700;
+  }
+  .dash-mini-val.gold { color: var(--gold); }
+  .dash-mini-val.green { color: var(--green); }
+  .dash-mini-change { font-size: 11px; margin-top: 4px; }
+  .dash-chart { margin-top: 4px; }
+  .chart-svg { width: 100%; height: 90px; }
+
+  /* FLOATING BADGE */
+  .float-badge {
+    position: absolute;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px 16px;
+    font-size: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  }
+  .float-badge.top-left {
+    top: -20px; left: -30px;
+    animation: float 5s ease-in-out infinite 1s;
+  }
+  .float-badge.bottom-right {
+    bottom: -20px; right: -20px;
+    animation: float 7s ease-in-out infinite 0.5s;
+  }
+  .float-badge-label { font-size: 11px; color: var(--muted); }
+  .float-badge-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; color: var(--green); }
+
+  /* PARTNERS */
+  .partners {
+    padding: 40px; border-top: 1px solid var(--border);
+    background: var(--bg2);
+  }
+  .partners-inner { max-width: 1280px; margin: 0 auto; }
+  .partners-label {
+    text-align: center; color: var(--muted);
+    font-size: 13px; text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 28px;
+  }
+  .partners-logos {
+    display: flex; align-items: center; justify-content: center;
+    gap: 48px; flex-wrap: wrap;
+  }
+  .partner-logo {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 16px; color: var(--muted);
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+  .partner-logo:hover { opacity: 1; color: var(--gold); }
+
+  /* SECTION COMMON */
+  section { padding: 100px 40px; }
+  .section-inner { max-width: 1280px; margin: 0 auto; }
+  .section-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 3px;
+    color: var(--gold); margin-bottom: 16px;
+  }
+  .section-label::before {
+    content: '';
+    width: 20px; height: 2px; background: var(--gold);
+  }
+  .section-title {
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 800; margin-bottom: 16px;
+  }
+  .section-sub { color: var(--muted); max-width: 560px; font-size: 17px; }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: center; margin-top: 60px;
+  }
+  .about-visual {
+    position: relative;
+  }
+  .about-main-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px; padding: 32px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .experience-badge {
+    position: absolute; top: -20px; right: -20px;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: #080c14; border-radius: 16px; padding: 20px;
+    text-align: center;
+  }
+  .exp-num { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; }
+  .exp-label { font-size: 12px; font-weight: 600; }
+  .about-mini-stat {
+    display: flex; gap: 6px; flex-direction: column;
+  }
+  .about-mini-num {
+    font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: var(--gold);
+  }
+  .about-mini-label { font-size: 14px; color: var(--muted); }
+  .about-stats-row { display: flex; gap: 40px; margin-top: 32px; }
+
+  .about-text { }
+  .about-text p { color: var(--muted); margin-bottom: 24px; font-size: 16px; }
+  .about-checklist { list-style: none; margin-bottom: 36px; }
+  .about-checklist li {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+    font-size: 15px;
+  }
+  .about-checklist li:last-child { border: none; }
+  .check-icon {
+    width: 22px; height: 22px; min-width: 22px;
+    background: rgba(34,211,165,0.1); border: 1px solid rgba(34,211,165,0.3);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--green);
+  }
+
+  /* SERVICES */
+  .services { background: var(--bg2); }
+  .services-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    margin-top: 60px;
+  }
+  .service-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 30px;
+    transition: all 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .service-card:hover { border-color: rgba(245,200,66,0.2); transform: translateY(-4px); }
+  .service-card:hover::before { opacity: 1; }
+  .service-icon {
+    width: 52px; height: 52px;
+    background: rgba(245,200,66,0.1);
+    border: 1px solid rgba(245,200,66,0.2);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; margin-bottom: 20px;
+  }
+  .service-card h5 {
+    font-size: 17px; font-weight: 700; margin-bottom: 10px;
+  }
+  .service-card p { color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+  /* PLANS */
+  .plans-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+    margin-top: 60px;
+  }
+  .plan-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 30px;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .plan-card.featured {
+    background: linear-gradient(160deg, rgba(245,200,66,0.1), rgba(245,200,66,0.02));
+    border-color: rgba(245,200,66,0.35);
+  }
+  .plan-badge-popular {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--gold); color: #080c14;
+    font-size: 11px; font-weight: 700; padding: 4px 14px;
+    border-radius: 50px; white-space: nowrap;
+    font-family: 'Syne', sans-serif;
+  }
+  .plan-name {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--muted); margin-bottom: 12px;
+  }
+  .plan-price {
+    font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800;
+    color: var(--gold); margin-bottom: 8px;
+  }
+  .plan-roi {
+    font-size: 13px; color: var(--green); margin-bottom: 24px;
+    font-weight: 500;
+  }
+  .plan-divider { border: none; border-top: 1px solid var(--border); margin-bottom: 24px; }
+  .plan-features { list-style: none; margin-bottom: 30px; }
+  .plan-features li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; color: var(--muted); padding: 7px 0;
+  }
+  .plan-features li .check { color: var(--green); font-size: 12px; }
+  .plan-card .btn { width: 100%; justify-content: center; }
+
+  /* WHY */
+  .why { background: var(--bg2); }
+  .why-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: center; margin-top: 60px;
+  }
+  .feature-list { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .feature-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px;
+    transition: all 0.3s;
+  }
+  .feature-item:hover { border-color: rgba(245,200,66,0.2); }
+  .feature-item-icon {
+    font-size: 28px; margin-bottom: 14px;
+  }
+  .feature-item h5 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .feature-item p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  .why-visual {
+    background: var(--card);
+    border: 1px solid var(--border); border-radius: 20px; overflow: hidden;
+  }
+  .why-visual-header {
+    background: var(--bg2); padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .why-visual-header span { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .live-badge {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--green);
+  }
+  .live-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 1.5s ease infinite; }
+  .why-visual-body { padding: 20px; }
+  .coin-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .coin-row:last-child { border: none; }
+  .coin-info { display: flex; align-items: center; gap: 12px; }
+  .coin-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700;
+  }
+  .coin-name { font-weight: 600; font-size: 14px; }
+  .coin-sym { font-size: 12px; color: var(--muted); }
+  .coin-price { font-weight: 600; text-align: right; }
+  .coin-chg { font-size: 12px; }
+  .up { color: var(--green); }
+  .dn { color: #f87171; }
+
+  /* TESTIMONIALS */
+  .testimonials { }
+  .notification-bar {
+    background: rgba(34,211,165,0.08);
+    border: 1px solid rgba(34,211,165,0.2);
+    border-radius: 12px; padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 14px; margin-bottom: 60px;
+    animation: slideIn 0.5s ease;
+  }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  .notif-icon { font-size: 18px; }
+  .notif-text { color: var(--muted); }
+  .notif-text strong { color: var(--text); }
+  .testimonials-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+    margin-top: 40px;
+  }
+  .testi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px;
+    transition: all 0.3s;
+  }
+  .testi-card:hover { border-color: rgba(245,200,66,0.2); transform: translateY(-2px); }
+  .testi-stars { color: var(--gold); font-size: 14px; margin-bottom: 14px; }
+  .testi-text { color: var(--muted); font-size: 15px; line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+  .testi-author { display: flex; align-items: center; gap: 12px; }
+  .testi-avatar {
+    width: 42px; height: 42px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; color: #080c14;
+  }
+  .testi-name { font-weight: 600; font-size: 14px; }
+  .testi-role { font-size: 12px; color: var(--muted); }
+
+  /* FAQ */
+  .faq { background: var(--bg2); }
+  .faq-list { max-width: 800px; margin: 60px auto 0; }
+  .faq-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .faq-item.open { border-color: rgba(245,200,66,0.25); }
+  .faq-q {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 24px; cursor: pointer;
+    font-weight: 600; font-size: 15px;
+    user-select: none;
+  }
+  .faq-icon {
+    width: 28px; height: 28px;
+    background: rgba(255,255,255,0.05); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; transition: transform 0.3s;
+    flex-shrink: 0; color: var(--gold);
+  }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+  .faq-a {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.35s ease;
+    color: var(--muted); font-size: 14px; line-height: 1.7;
+    padding: 0 24px;
+  }
+  .faq-item.open .faq-a { max-height: 300px; padding: 0 24px 20px; }
+
+  /* CTA */
+  .cta-section {
+    padding: 100px 40px;
+    background:
+      radial-gradient(ellipse 60% 80% at 50% 50%, rgba(245,200,66,0.07) 0%, transparent 70%);
+    text-align: center;
+  }
+  .cta-inner { max-width: 700px; margin: 0 auto; }
+  .cta-inner h2 { font-size: clamp(30px, 4vw, 50px); font-weight: 800; margin-bottom: 20px; }
+  .cta-inner p { color: var(--muted); font-size: 18px; margin-bottom: 40px; }
+  .cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+  /* FOOTER */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 60px 40px 30px;
+  }
+  .footer-inner { max-width: 1280px; margin: 0 auto; }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px;
+    margin-bottom: 50px;
+  }
+  .footer-brand p { color: var(--muted); font-size: 14px; line-height: 1.7; margin-top: 16px; max-width: 280px; }
+  .footer-col h6 {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--gold); margin-bottom: 20px;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 10px; }
+  .footer-col ul li a { color: var(--muted); font-size: 14px; transition: color 0.2s; }
+  .footer-col ul li a:hover { color: var(--text); }
+  .footer-bottom {
+    border-top: 1px solid var(--border); padding-top: 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px; color: var(--muted); flex-wrap: wrap; gap: 12px;
+  }
+
+  /* DARK MODE TOGGLE */
+  .theme-toggle {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 16px; transition: all 0.2s;
+    color: var(--text);
+  }
+  .theme-toggle:hover { border-color: var(--gold); }
+
+  body.light {
+    --bg: #f5f5f7; --bg2: #ffffff; --card: #ffffff;
+    --border: rgba(0,0,0,0.08); --text: #111827; --muted: #6b7280;
+    --gold: #c9960e;
+  }
+  body.light nav { background: rgba(245,245,247,0.92); }
+
+  /* MOBILE NAV */
+  .mobile-nav {
+    display: none;
+    position: fixed; inset: 0; z-index: 99;
+    background: var(--bg);
+    padding: 100px 40px 40px;
+    flex-direction: column; gap: 12px;
+  }
+  .mobile-nav.show { display: flex; }
+  .mobile-nav a {
+    font-size: 22px; font-family: 'Syne', sans-serif; font-weight: 700;
+    color: var(--text); padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    .plans-grid { grid-template-columns: repeat(2, 1fr); }
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .nav-links, .nav-cta { display: none; }
+    .hamburger { display: flex; }
+    section { padding: 70px 20px; }
+    .hero { padding: 60px 20px; }
+    .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+    .hero-visual { display: none; }
+    .about-grid, .why-grid { grid-template-columns: 1fr; gap: 40px; }
+    .plans-grid { grid-template-columns: 1fr; }
+    .services-grid { grid-template-columns: 1fr; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .feature-list { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 30px; }
+    .footer-bottom { flex-direction: column; text-align: center; }
+    .partners { padding: 30px 20px; }
+    footer { padding: 50px 20px 24px; }
+    .cta-section { padding: 70px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="preloader-ring"></div>
+</div>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#home">Home</a>
+  <a href="#about">About</a>
+  <a href="#services">Services</a>
+  <a href="#plans">Plans</a>
+  <a href="#why">Why Us</a>
+  <a href="#faq">FAQ</a>
+  <a href="#contact">Contact</a>
+  <div style="display:flex;gap:12px;margin-top:20px;">
+    <a href="#" class="btn btn-outline" data-auth-trigger="signin">Sign In</a>
+    <a href="#" class="btn btn-gold" data-auth-trigger="signup">Get Started</a>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-bar" id="tickerBar">
+  <div class="ticker-inner" id="tickerInner"></div>
+</div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-inner">
+    <a href="#home" class="logo">
+      <div class="logo-icon">Q</div>
+      Quadzedge
+    </a>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li class="dropdown">
+        <a href="#services">Services ▾</a>
+        <div class="dropdown-menu">
+          <a href="#services">Copy Trading</a>
+          <a href="#services">Financial Advisory</a>
+          <a href="#services">Forex Trading</a>
+          <a href="#services">ETF Stocks</a>
+        </div>
+      </li>
+      <li class="dropdown">
+        <a href="#">Trading Tools ▾</a>
+        <div class="dropdown-menu">
+          <a href="#">Forex Charts</a>
+          <a href="#">Index Charts</a>
+          <a href="#">Crypto Market</a>
+        </div>
+      </li>
+      <li><a href="#plans">Plans</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
+      <a href="#" class="btn btn-outline" data-auth-trigger="signin">Sign In</a>
+      <a href="#" class="btn btn-gold" data-auth-trigger="signup">Sign Up</a>
+    </div>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Trusted by 25,000+ traders worldwide
+      </div>
+      <h1>The Right Place for <span>Online Trading</span> on Financial Markets</h1>
+      <p>The most convenient trading interface. Instant access to 100+ assets from the world's leading companies, crypto, forex, and stocks.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-gold" data-auth-trigger="signup">Get Started Free</a>
+        <a href="#about" class="btn btn-outline">Learn More →</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-num">25K+</div>
+          <div class="hero-stat-label">Active Traders</div>
+        </div>
+        <div>
+          <div class="hero-stat-num">$2.4B+</div>
+          <div class="hero-stat-label">Volume Traded</div>
+        </div>
+        <div>
+          <div class="hero-stat-num">80%</div>
+          <div class="hero-stat-label">Max ROI</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="float-badge top-left">
+        <div class="float-badge-label">Bitcoin 24h</div>
+        <div class="float-badge-val">+4.82% ↑</div>
+      </div>
+      <div class="dashboard-card">
+        <div class="dash-header">
+          <div class="dash-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="dash-title">Quadzedge Dashboard</div>
+          <div style="font-size:12px;color:var(--green);">● Live</div>
+        </div>
+        <div class="dash-body">
+          <div class="dash-row">
+            <div class="dash-mini-card">
+              <div class="dash-mini-label">Portfolio Value</div>
+              <div class="dash-mini-val gold">$24,580</div>
+              <div class="dash-mini-change up">↑ +8.4% this month</div>
+            </div>
+            <div class="dash-mini-card">
+              <div class="dash-mini-label">Total Profit</div>
+              <div class="dash-mini-val green">$6,210</div>
+              <div class="dash-mini-change up">↑ Active gains</div>
+            </div>
+          </div>
+          <div class="dash-chart">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Performance (7d)</div>
+            <svg class="chart-svg" viewBox="0 0 320 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#f5c842" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#f5c842" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M0,70 C30,68 50,60 80,50 C110,40 130,45 160,32 C190,20 210,28 240,18 C270,10 290,14 320,8" stroke="#f5c842" stroke-width="2" fill="none"/>
+              <path d="M0,70 C30,68 50,60 80,50 C110,40 130,45 160,32 C190,20 210,28 240,18 C270,10 290,14 320,8 L320,90 L0,90 Z" fill="url(#chartGrad)"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="float-badge bottom-right">
+        <div class="float-badge-label">ROI Earned</div>
+        <div class="float-badge-val">+$1,240 today</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<div class="partners">
+  <div class="partners-inner">
+    <div class="partners-label">Trusted partners & regulated markets</div>
+    <div class="partners-logos">
+      <div class="partner-logo">CoinBase</div>
+      <div class="partner-logo">Binance</div>
+      <div class="partner-logo">MetaTrader</div>
+      <div class="partner-logo">TradingView</div>
+      <div class="partner-logo">CMC Markets</div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-visual">
+        <div class="about-main-card">
+          <div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Platform Trust Score</div>
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;">
+            <div style="font-family:'Syne',sans-serif;font-size:52px;font-weight:800;color:var(--gold);">9.8</div>
+            <div>
+              <div style="color:var(--gold);font-size:20px;">★★★★★</div>
+              <div style="font-size:13px;color:var(--muted);">Based on 2,400+ reviews</div>
+            </div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:13px;">
+              <span style="color:var(--muted);">Security</span>
+              <span style="color:var(--green);font-weight:600;">98%</span>
+            </div>
+            <div style="height:6px;background:rgba(255,255,255,0.06);border-radius:6px;overflow:hidden;">
+              <div style="height:100%;width:98%;background:linear-gradient(90deg,var(--green),#16a07a);border-radius:6px;"></div>
+            </div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:13px;">
+              <span style="color:var(--muted);">Uptime</span>
+              <span style="color:var(--gold);font-weight:600;">99.9%</span>
+            </div>
+            <div style="height:6px;background:rgba(255,255,255,0.06);border-radius:6px;overflow:hidden;">
+              <div style="height:100%;width:99%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:6px;"></div>
+            </div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:16px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:13px;">
+              <span style="color:var(--muted);">Satisfaction</span>
+              <span style="color:var(--blue);font-weight:600;">96%</span>
+            </div>
+            <div style="height:6px;background:rgba(255,255,255,0.06);border-radius:6px;overflow:hidden;">
+              <div style="height:100%;width:96%;background:linear-gradient(90deg,var(--blue),#2563eb);border-radius:6px;"></div>
+            </div>
+          </div>
+          <div class="about-stats-row">
+            <div class="about-mini-stat">
+              <div class="about-mini-num">20+</div>
+              <div class="about-mini-label">Years Experience</div>
+            </div>
+            <div class="about-mini-stat">
+              <div class="about-mini-num">25K+</div>
+              <div class="about-mini-label">Customers</div>
+            </div>
+          </div>
+        </div>
+        <div class="experience-badge">
+          <div class="exp-num">10+</div>
+          <div class="exp-label">Years of Pro<br>Services</div>
+        </div>
+      </div>
+      <div class="about-text">
+        <div class="section-label">About Us</div>
+        <h2 class="section-title">We Have 10+ Years of Experience in Standard Professional Services</h2>
+        <p>A platform that allows novice traders to copy and mirror professional traders' positions. We create all the materials to assist you in growing and progressing to the next level.</p>
+        <p>We're delighted you found our platform. Don't pass up this chance to learn about what we do and the incredible team that makes it all possible.</p>
+        <ul class="about-checklist">
+          <li><span class="check-icon">✓</span> Building a Better Trading Future</li>
+          <li><span class="check-icon">✓</span> Provide a World-Class Trading Experience</li>
+          <li><span class="check-icon">✓</span> The Experts Behind Your Success</li>
+          <li><span class="check-icon">✓</span> Empowering Traders Worldwide</li>
+        </ul>
+        <a href="#" class="btn btn-gold">Learn More →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-inner">
+    <div style="text-align:center;">
+      <div class="section-label" style="justify-content:center;">Services</div>
+      <h2 class="section-title">Services We Offer</h2>
+      <p class="section-sub" style="margin:0 auto;">We offer world class services around trading and investments. Check out some of what we do below.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🔄</div>
+        <h5>Copy Trading</h5>
+        <p>Copy trading allows you to directly replicate the positions taken by another trader. You simply copy everything they do, automatically.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📊</div>
+        <h5>Financial Advisory</h5>
+        <p>We offer financial advice leading to smart trading by automating processes and improving decision-making through data.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">💱</div>
+        <h5>Forex Trading</h5>
+        <p>Trade the Foreign Exchange Market, a global decentralized market for currency trading with real-time precision.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📈</div>
+        <h5>Index Trading</h5>
+        <p>ROI rates as high as 41%. Indices contain about 0.24%, making them a strategic sweet spot for steady investors.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🏦</div>
+        <h5>ETF Stocks</h5>
+        <p>Buy stocks, commodities, bonds, and other securities and place them where they will grow consistently over time.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">⚡</div>
+        <h5>CFDs</h5>
+        <p>Trade directly on CFDs without the stress of managing wallets or exchange accounts. Simple, fast, and reliable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANS -->
+<section id="plans">
+  <div class="section-inner">
+    <div style="text-align:center;">
+      <div class="section-label" style="justify-content:center;">Investment Plans</div>
+      <h2 class="section-title">Our Plans</h2>
+      <p class="section-sub" style="margin:0 auto;">Explore our investment plans to suit your financial budget. All plans include 24/7 expert support.</p>
+    </div>
+    <div class="plans-grid">
+      <div class="plan-card">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price">$1,000 – $5,000</div>
+        <div class="plan-roi">30% ROI</div>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li><span class="check">✓</span> 30% Return on Investment</li>
+          <li><span class="check">✓</span> 24/7 Expert Support</li>
+          <li><span class="check">✓</span> Copy Trading Access</li>
+          <li><span class="check">✓</span> 10% Referral Earnings</li>
+        </ul>
+        <a href="#" class="btn btn-outline" data-auth-trigger="signup">Start Now</a>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-badge-popular">Most Popular</div>
+        <div class="plan-name">Silver</div>
+        <div class="plan-price">$5,000 – $50,000</div>
+        <div class="plan-roi">45% ROI</div>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li><span class="check">✓</span> 45% Return on Investment</li>
+          <li><span class="check">✓</span> 24/7 Expert Support</li>
+          <li><span class="check">✓</span> Copy Trading Access</li>
+          <li><span class="check">✓</span> 15% Referral Earnings</li>
+        </ul>
+        <a href="#" class="btn btn-gold" data-auth-trigger="signup">Start Now</a>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">Gold</div>
+        <div class="plan-price">$50,000 – $100,000</div>
+        <div class="plan-roi">60% ROI</div>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li><span class="check">✓</span> 60% Return on Investment</li>
+          <li><span class="check">✓</span> 24/7 Expert Support</li>
+          <li><span class="check">✓</span> Copy Trading Access</li>
+          <li><span class="check">✓</span> 20% Referral Earnings</li>
+        </ul>
+        <a href="#" class="btn btn-outline" data-auth-trigger="signup">Start Now</a>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">Platinum</div>
+        <div class="plan-price">$100,000+</div>
+        <div class="plan-roi">80% ROI</div>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li><span class="check">✓</span> 80% Return on Investment</li>
+          <li><span class="check">✓</span> 24/7 Expert Support</li>
+          <li><span class="check">✓</span> Copy Trading Access</li>
+          <li><span class="check">✓</span> 30% Referral Earnings</li>
+        </ul>
+        <a href="#" class="btn btn-outline" data-auth-trigger="signup">Start Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section class="why" id="why">
+  <div class="section-inner">
+    <div class="why-grid">
+      <div>
+        <div class="section-label">Why Quadzedge</div>
+        <h2 class="section-title">Why Choose Us?</h2>
+        <p class="section-sub" style="margin-bottom:40px;">Here are a few reasons why thousands of traders trust Quadzedge with their investments.</p>
+        <div class="feature-list">
+          <div class="feature-item">
+            <div class="feature-item-icon">📡</div>
+            <h5>Real-time Data</h5>
+            <p>Transact Crypto, Forex, ETFs and other investments anywhere, anytime.</p>
+          </div>
+          <div class="feature-item">
+            <div class="feature-item-icon">🕐</div>
+            <h5>24/7 Support</h5>
+            <p>Our team of professionals and investment experts are always here for you.</p>
+          </div>
+          <div class="feature-item">
+            <div class="feature-item-icon">🔒</div>
+            <h5>Higher Security</h5>
+            <p>Full protection against third-party attacks and complete data encryption.</p>
+          </div>
+          <div class="feature-item">
+            <div class="feature-item-icon">💳</div>
+            <h5>Multiple Deposits</h5>
+            <p>Deposit from any crypto wallet. Your assets are stored securely at all times.</p>
+          </div>
+          <div class="feature-item">
+            <div class="feature-item-icon">⚡</div>
+            <h5>Instant Withdrawal</h5>
+            <p>Withdrawals are processed instantly after confirmation. No delays.</p>
+          </div>
+          <div class="feature-item">
+            <div class="feature-item-icon">📋</div>
+            <h5>Transparency</h5>
+            <p>Full performance statistics including requote, slippage, and order execution.</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="why-visual">
+          <div class="why-visual-header">
+            <span>Live Market Prices</span>
+            <div class="live-badge"><span class="live-dot"></span> Live</div>
+          </div>
+          <div class="why-visual-body" id="livePrices">
+            <!-- populated by JS -->
+          </div>
+        </div>
+        <div style="margin-top:16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+          <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">Earn up to</div>
+          <div style="font-family:'Syne',sans-serif;font-size:40px;font-weight:800;color:var(--gold);">80% ROI</div>
+          <div style="font-size:14px;color:var(--muted);margin-top:8px;">on your investment with our Platinum plan</div>
+          <a href="#plans" class="btn btn-gold" style="margin-top:20px;width:100%;justify-content:center;">View All Plans</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-inner">
+    <div class="notification-bar" id="notifBar">
+      <span class="notif-icon">🎉</span>
+      <div class="notif-text"><strong>Tebogo Mahlomolapelo</strong> from South Africa just withdrew <strong>$11,210</strong></div>
+    </div>
+    <div style="text-align:center;">
+      <div class="section-label" style="justify-content:center;">Testimonials</div>
+      <h2 class="section-title">What Our Customers Say</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"I love this platform 100%. The copy trading feature is incredible. I've grown my portfolio from scratch and every single trade has been transparent."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#f5c842,#e8a816);">T</div>
+          <div>
+            <div class="testi-name">Tebogo Mahlomolapelo</div>
+            <div class="testi-role">Customer, South Africa</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"I've had so many bad experiences with other platforms. Since I joined Quadzedge, I have genuinely enjoyed trading. The support team is always on point."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#22d3a5,#16a07a);">J</div>
+          <div>
+            <div class="testi-name">James Craig</div>
+            <div class="testi-role">Trader, United States</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Just withdrew 300,000 pesos. Congratulations to the entire Quadzedge team. This is the most reliable trading platform I have used in five years."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#3b82f6,#2563eb);">M</div>
+          <div>
+            <div class="testi-name">Memphis Daniel</div>
+            <div class="testi-role">Customer, Philippines</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"The platform UI is clean and the real-time data is always accurate. I started with the Starter plan and moved to Gold within 3 months. Highly recommended."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#a855f7,#7c3aed);">C</div>
+          <div>
+            <div class="testi-name">Cassandra Bloom</div>
+            <div class="testi-role">Customer, Canada</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="section-inner">
+    <div style="text-align:center;">
+      <div class="section-label" style="justify-content:center;">FAQ</div>
+      <h2 class="section-title">Most Common Questions</h2>
+      <p class="section-sub" style="margin:0 auto;">Everything you need to know about trading on Quadzedge.</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">I can't sign in to my account?<span class="faq-icon">+</span></div>
+        <div class="faq-a">You're likely entering incorrect authentication data. If you can't remember your password, use the password recovery function. Press "Forgot password?" on the login page and follow the instructions. Check your Spam folder if the email doesn't arrive in your inbox.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is Copy Stop Loss?<span class="faq-icon">+</span></div>
+        <div class="faq-a">Copy Stop Loss (CSL) is an instruction to close a copy if the value of the entire copy drops below a specific dollar amount or ratio. You can use this to protect your investment. CSL is mandatory on every copy and can be set anywhere between 5% and 95%.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do I make a deposit?<span class="faq-icon">+</span></div>
+        <div class="faq-a">Log in to your account. Click on 'Deposit'. Enter the amount you wish to deposit. Select the payment method from the dropdown menu. If crypto is selected, copy the wallet address and send your funds. Deposits are confirmed within minutes.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is Copy Trading?<span class="faq-icon">+</span></div>
+        <div class="faq-a">As the name implies, it's copying trades from an experienced trader. You select a trader, and whatever positions they open, you open automatically. The profits and losses are proportional to your investment amount.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do I withdraw my profits?<span class="faq-icon">+</span></div>
+        <div class="faq-a">Very straightforward. Log in to your account and click 'Withdrawal'. Enter the withdrawal amount and your desired method. Select the account to withdraw from and click proceed. Most withdrawals are processed instantly or within 24 hours.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Is it safe to share my information here?<span class="faq-icon">+</span></div>
+        <div class="faq-a">Our services are completely confidential. We do not share any user data with third parties. All data is encrypted and protected. Please see our privacy policy for complete details.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Do you offer a referral program?<span class="faq-icon">+</span></div>
+        <div class="faq-a">Yes. We have a referral program with earnings ranging from 10% to 30% depending on your plan tier. Check your user dashboard to access your unique referral link and track your earnings.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section" id="contact">
+  <div class="cta-inner">
+    <div class="section-label" style="justify-content:center;">Get Started</div>
+    <h2>Ready to Start Growing Your Money?</h2>
+    <p>Join 25,000+ traders already using Quadzedge to build wealth through smarter, more confident investing.</p>
+    <div class="cta-actions">
+      <a href="#" class="btn btn-gold" style="font-size:15px;padding:14px 32px;" data-auth-trigger="signup">Create Free Account</a>
+      <a href="#" class="btn btn-outline" style="font-size:15px;padding:14px 32px;">Contact Support</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#home" class="logo">
+          <div class="logo-icon">Q</div>
+          Quadzedge
+        </a>
+        <p>We help your money grow by putting it to work. Our experts ensure your funds are in carefully planned and strategically diversified trading portfolios for smart risk management.</p>
+      </div>
+      <div class="footer-col">
+        <h6>Quick Links</h6>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#">Forex Charts</a></li>
+          <li><a href="#">Index Charts</a></li>
+          <li><a href="#">Crypto Charts</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h6>Support</h6>
+        <ul>
+          <li><a href="#">Terms & Conditions</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Risk Disclosure</a></li>
+          <li><a href="#">Support Center</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h6>Company</h6>
+        <ul>
+          <li><a href="#">Copy Trading</a></li>
+          <li><a href="#">Stock Trading</a></li>
+          <li><a href="#">Forex Trading</a></li>
+          <li><a href="#">Crypto Trading</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2025 All Rights Reserved By Quadzedge</div>
+      <div style="display:flex;gap:20px;">
+        <a href="#" style="color:var(--muted);font-size:13px;">Privacy Policy</a>
+        <a href="#" style="color:var(--muted);font-size:13px;">Terms</a>
+        <a href="#" style="color:var(--muted);font-size:13px;">Risk Disclosure</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div id="authModal" class="auth-modal" aria-hidden="true">
+  <div class="auth-modal__backdrop" data-auth-close></div>
+  <div class="auth-modal__dialog">
+    <button type="button" class="auth-modal__close" data-auth-close aria-label="Close">&times;</button>
+    <div class="auth-modal__layout">
+      <div class="auth-modal__intro">
+        <div class="auth-modal__intro-copy">
+          <div class="auth-modal__eyebrow">Secure Access</div>
+          <h3>Trade, fund, and track your account in one place.</h3>
+          <p>Clients can submit crypto deposits and withdrawals from a clean workspace, while administrators review every request from a separate control center.</p>
+        </div>
+        <div class="auth-modal__benefits">
+          <div class="auth-modal__benefit">
+            <strong>Client funding workflow</strong>
+            <span>Select a coin, copy the wallet address, confirm payment, and wait for admin approval.</span>
+          </div>
+          <div class="auth-modal__benefit">
+            <strong>Dedicated admin control</strong>
+            <span>Admins sign in and land on their own page to approve, decline, and manage clients.</span>
+          </div>
+        </div>
+        <div class="auth-modal__credentials">
+          <div class="auth-modal__credential-note">Demo access</div>
+          <div class="auth-modal__credential">
+            <strong>Client</strong>
+            <span>ava@zenturocapital.com / Client123!</span>
+          </div>
+          <div class="auth-modal__credential">
+            <strong>Admin</strong>
+            <span>admin@zenturocapital.com / Admin123!</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="auth-modal__formwrap">
+        <div class="auth-modal__header">
+          <h3>Access your workspace</h3>
+          <p>Sign in to continue or create a new client account.</p>
+        </div>
+        <div class="auth-tabs" role="tablist" aria-label="Authentication tabs">
+          <button type="button" class="auth-tab is-active" data-auth-tab="signin" aria-selected="true">Sign In</button>
+          <button type="button" class="auth-tab" data-auth-tab="signup" aria-selected="false">Create Account</button>
+        </div>
+
+        <div class="auth-panel is-active" data-auth-panel="signin">
+          <form id="signinForm" class="auth-form">
+            <label class="auth-field">
+              <span>Email Address</span>
+              <input type="email" name="email" placeholder="you@example.com" required>
+            </label>
+            <label class="auth-field">
+              <span>Password</span>
+              <input type="password" name="password" placeholder="Enter password" required>
+            </label>
+            <div class="auth-form__meta">
+              <label class="auth-check">
+                <input type="checkbox" name="remember">
+                <span>Remember me</span>
+              </label>
+              <button type="button" class="auth-link" id="forgotPasswordBtn">Forgot password?</button>
+            </div>
+            <div id="signinMessage" class="auth-message" aria-live="polite"></div>
+            <button type="submit" class="btn btn-gold auth-submit">Open Workspace</button>
+          </form>
+        </div>
+
+        <div class="auth-panel" data-auth-panel="signup">
+          <form id="signupForm" class="auth-form">
+            <div class="auth-form__split">
+              <label class="auth-field">
+                <span>Full Name</span>
+                <input type="text" name="name" placeholder="Ava Carter" required>
+              </label>
+              <label class="auth-field">
+                <span>Email Address</span>
+                <input type="email" name="email" placeholder="you@example.com" required>
+              </label>
+            </div>
+            <div class="auth-form__split">
+              <label class="auth-field">
+                <span>Password</span>
+                <input type="password" name="password" placeholder="Minimum 8 characters" required>
+              </label>
+              <label class="auth-field">
+                <span>Confirm Password</span>
+                <input type="password" name="confirmPassword" placeholder="Repeat password" required>
+              </label>
+            </div>
+            <label class="auth-field">
+              <span>Investment Plan</span>
+              <select name="plan">
+                <option value="Starter">Starter</option>
+                <option value="Silver">Silver</option>
+                <option value="Gold">Gold</option>
+                <option value="Platinum">Platinum</option>
+              </select>
+            </label>
+            <label class="auth-check">
+              <input type="checkbox" name="terms">
+              <span>I agree to the client communication policy and account review process.</span>
+            </label>
+            <div id="signupMessage" class="auth-message" aria-live="polite"></div>
+            <button type="submit" class="btn btn-gold auth-submit">Create Client Account</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="authToast" class="auth-toast" aria-live="polite"></div>
+
+<div id="appShell" class="app-shell" aria-hidden="true">
+  <div id="appShellBackdrop" class="app-shell__backdrop"></div>
+  <div class="app-shell__frame">
+    <div class="app-shell__topbar">
+      <div>
+        <div id="appShellEyebrow" class="app-shell__eyebrow">Client Workspace</div>
+        <h2 id="appShellTitle" class="app-shell__title">Capital workspace</h2>
+      </div>
+      <div class="app-shell__actions">
+        <button type="button" id="appShellHomeBtn" class="btn btn-outline app-shell__ghost">Back To Site</button>
+        <button type="button" id="signOutBtn" class="btn btn-gold">Sign Out</button>
+      </div>
+    </div>
+
+    <div class="app-shell__layout">
+      <aside class="app-shell__sidebar">
+        <div class="app-shell__profile">
+          <div id="appAvatar" class="app-shell__avatar">A</div>
+          <div>
+            <div id="appUserName" class="app-shell__name">Platform User</div>
+            <div id="appUserMeta" class="app-shell__meta">workspace@example.com</div>
+          </div>
+        </div>
+
+        <div id="appNav" class="app-shell__nav"></div>
+
+        <div class="app-shell__status-card">
+          <div class="app-shell__status-kicker">Workspace Status</div>
+          <div id="appStatusValue" class="app-shell__status-value">Loading</div>
+          <p id="appStatusCopy">Checking your access level.</p>
+        </div>
+      </aside>
+
+      <main class="app-shell__content">
+        <section id="clientDashboardView" class="app-view">
+          <div class="dashboard-grid dashboard-grid--hero">
+            <article class="dashboard-panel dashboard-panel--primary">
+              <div class="dashboard-panel__header">
+                <div>
+                  <div class="dashboard-panel__eyebrow">Account Overview</div>
+                  <h3 id="clientWelcomeTitle" class="dashboard-panel__headline">Your capital workspace is ready.</h3>
+                </div>
+              </div>
+              <p id="clientWelcomeCopy" class="dashboard-panel__copy"></p>
+              <div class="metric-cards">
+                <div class="metric-card">
+                  <div class="metric-card__label">Plan</div>
+                  <div id="clientPlanValue" class="metric-card__value">Starter</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-card__label">Account Balance</div>
+                  <div id="clientBalanceValue" class="metric-card__value">$0</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-card__label">Performance</div>
+                  <div id="clientPerformanceValue" class="metric-card__value">0.0%</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="dashboard-panel">
+              <div class="dashboard-panel__header">
+                <div>
+                  <div class="dashboard-panel__eyebrow">Profile Status</div>
+                </div>
+              </div>
+              <div class="dashboard-status-list">
+                <div class="dashboard-status-row"><span>KYC</span><strong id="clientKycValue">Pending</strong></div>
+                <div class="dashboard-status-row"><span>Approval</span><strong id="clientApprovalValue">Pending</strong></div>
+                <div class="dashboard-status-row"><span>Advisor</span><strong id="clientAdvisorValue">Relationship Desk</strong></div>
+              </div>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="dashboard-panel">
+              <div class="dashboard-panel__header">
+                <div>
+                  <div class="dashboard-panel__eyebrow">Deposit Crypto</div>
+                </div>
+              </div>
+              <div id="depositStepEntry" class="request-step">
+                <form id="depositRequestForm" class="dashboard-form">
+                  <div class="dashboard-form__split">
+                    <label class="dashboard-field">
+                      <span>Cryptocurrency</span>
+                      <select name="asset">
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="ETH">Ethereum (ETH)</option>
+                        <option value="USDT">Tether (USDT - TRC20)</option>
+                        <option value="BNB">BNB Smart Chain (BNB)</option>
+                      </select>
+                    </label>
+                    <label class="dashboard-field">
+                      <span>Amount</span>
+                      <input type="number" name="amount" min="1" step="1" placeholder="1000" required>
+                    </label>
+                  </div>
+                  <label class="dashboard-field">
+                    <span>Deposit Note</span>
+                    <textarea name="notes" rows="3" placeholder="Optional note for the admin desk"></textarea>
+                  </label>
+                  <button type="submit" class="btn btn-gold">Next</button>
+                </form>
+              </div>
+
+              <div id="depositStepCheckout" class="request-step is-hidden">
+                <div class="request-step__summary">
+                  <div class="request-step__summary-row"><span>Asset</span><strong id="depositSelectedAsset">Bitcoin (BTC)</strong></div>
+                  <div class="request-step__summary-row"><span>Amount</span><strong id="depositSelectedAmount">$0</strong></div>
+                  <div class="request-step__summary-row"><span>Network</span><strong id="depositSelectedNetwork">Bitcoin</strong></div>
+                </div>
+                <label class="dashboard-field">
+                  <span>Wallet Address</span>
+                  <input id="depositWalletAddress" class="request-wallet" type="text" readonly>
+                </label>
+                <div class="request-step__actions">
+                  <button type="button" id="depositBackBtn" class="btn btn-outline">Back</button>
+                  <button type="button" id="depositCopyBtn" class="btn btn-outline">Copy Address</button>
+                  <button type="button" id="depositConfirmBtn" class="btn btn-gold">I Have Made Payment</button>
+                </div>
+              </div>
+
+              <div id="depositRequestMessage" class="dashboard-message" aria-live="polite"></div>
+            </article>
+
+            <article class="dashboard-panel">
+              <div class="dashboard-panel__header">
+                <div>
+                  <div class="dashboard-panel__eyebrow">Withdraw Funds</div>
+                </div>
+              </div>
+              <form id="withdrawalRequestForm" class="dashboard-form">
+                <label class="dashboard-field">
+                  <span>Withdrawal Amount</span>
+                  <input type="number" name="amount" min="1" step="1" placeholder="500" required>
+                </label>
+                <label class="dashboard-field">
+                  <span>Withdrawal Note</span>
+                  <textarea name="notes" rows="3" placeholder="Optional note for the admin desk"></textarea>
+                </label>
+                <button type="submit" class="btn btn-gold">Submit Withdrawal</button>
+              </form>
+              <div id="withdrawalRequestMessage" class="dashboard-message" aria-live="polite"></div>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="dashboard-panel">
+              <div class="dashboard-panel__header">
+                <div>
+                  <div class="dashboard-panel__eyebrow">Request History</div>
+                </div>
+              </div>
+              <div id="clientRequestList" class="table-list"></div>
+            </article>
+
+            <article class="dashboard-panel">
+              <div class="dashboard-panel__header">
+                <div>
+                  <div class="dashboard-panel__eyebrow">Announcement</div>
+                </div>
+              </div>
+              <div id="clientAnnouncementCard" class="announcement-card"></div>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="dashboard-panel">
+              <div class="dashboard-panel__header">
+                <div>
+                  <div class="dashboard-panel__eyebrow">Portfolio Allocation</div>
+                </div>
+              </div>
+              <div id="clientPortfolioList" class="data-list"></div>
+            </article>
+
+            <article class="dashboard-panel">
+              <div class="dashboard-panel__header">
+                <div>
+                  <div class="dashboard-panel__eyebrow">Recent Activity</div>
+                </div>
+              </div>
+              <div id="clientActivityList" class="timeline-list"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="adminDashboardView" class="app-view">
+          <div class="dashboard-grid">
+            <article class="metric-card">
+              <div class="metric-card__label">Pending Clients</div>
+              <div id="adminPendingCount" class="metric-card__value">0</div>
+            </article>
+            <article class="metric-card">
+              <div class="metric-card__label">Approved Clients</div>
+              <div id="adminApprovedCount" class="metric-card__value">0</div>
+            </article>
+            <article class="metric-card">
+              <div class="metric-card__label">Pending Requests</div>
+              <div id="adminRequestCount" class="metric-card__value">0</div>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="dashboard-panel">
+              <div class="dashboard-panel__header">
+                <div>
+                  <div class="dashboard-panel__eyebrow">Registration Queue</div>
+                </div>
+              </div>
+              <div id="adminPendingList" class="table-list"></div>
+            </article>
+
+            <article class="dashboard-panel">
+              <div class="dashboard-panel__header">
+                <div>
+                  <div class="dashboard-panel__eyebrow">Deposit And Withdrawal Requests</div>
+                </div>
+              </div>
+              <div id="adminRequestsList" class="table-list"></div>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="dashboard-panel">
+              <div class="dashboard-panel__header">
+                <div>
+                  <div class="dashboard-panel__eyebrow">Client Settings</div>
+                </div>
+              </div>
+              <form id="adminClientForm" class="dashboard-form">
+                <input type="hidden" name="clientId">
+                <label class="dashboard-field">
+                  <span>Client</span>
+                  <select id="adminClientSelect"></select>
+                </label>
+                <div class="dashboard-form__split">
+                  <label class="dashboard-field">
+                    <span>Plan</span>
+                    <select name="plan">
+                      <option value="Starter">Starter</option>
+                      <option value="Silver">Silver</option>
+                      <option value="Gold">Gold</option>
+                      <option value="Platinum">Platinum</option>
+                    </select>
+                  </label>
+                  <label class="dashboard-field">
+                    <span>Status</span>
+                    <select name="status">
+                      <option value="pending">Pending</option>
+                      <option value="approved">Approved</option>
+                      <option value="suspended">Suspended</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="dashboard-form__split">
+                  <label class="dashboard-field">
+                    <span>Balance</span>
+                    <input type="number" name="balance" min="0" step="1">
+                  </label>
+                  <label class="dashboard-field">
+                    <span>Performance</span>
+                    <input type="number" name="performance" step="0.1">
+                  </label>
+                </div>
+                <label class="dashboard-field">
+                  <span>KYC</span>
+                  <select name="kyc">
+                    <option value="Pending">Pending</option>
+                    <option value="Verified">Verified</option>
+                  </select>
+                </label>
+                <label class="dashboard-field">
+                  <span>Internal Note</span>
+                  <textarea name="note" rows="3" placeholder="Add a note to the client activity log"></textarea>
+                </label>
+                <button type="submit" class="btn btn-gold">Save Client Settings</button>
+              </form>
+              <div id="adminClientMessage" class="dashboard-message" aria-live="polite"></div>
+            </article>
+
+            <article class="dashboard-panel">
+              <div class="dashboard-panel__header">
+                <div>
+                  <div class="dashboard-panel__eyebrow">Broadcast Announcement</div>
+                </div>
+              </div>
+              <form id="adminAnnouncementForm" class="dashboard-form">
+                <label class="dashboard-field">
+                  <span>Headline</span>
+                  <input type="text" name="headline" placeholder="Platform notice">
+                </label>
+                <label class="dashboard-field">
+                  <span>Message</span>
+                  <textarea name="message" rows="5" placeholder="Write the message clients should see in their dashboards"></textarea>
+                </label>
+                <button type="submit" class="btn btn-gold">Publish Announcement</button>
+              </form>
+              <div id="adminAnnouncementMessage" class="dashboard-message" aria-live="polite"></div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</div>
+
+<script src="shared.js" defer></script>
+<script src="app.js" defer></script>
+
+<script>
+  // PRELOADER
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('preloader').classList.add('hide');
+    }, 800);
+  });
+
+  // HAMBURGER
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('mobileNav');
+  hamburger.addEventListener('click', () => {
+    mobileNav.classList.toggle('show');
+  });
+  mobileNav.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => mobileNav.classList.remove('show'));
+  });
+
+  // THEME TOGGLE
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    themeToggle.textContent = document.body.classList.contains('light') ? '🌑' : '🌙';
+  });
+
+  // FAQ
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // TICKER
+  const tickerData = [
+    { symbol: 'BTC/USD', price: '$68,420.50', change: '+4.82%', up: true },
+    { symbol: 'ETH/USD', price: '$3,812.30', change: '+2.14%', up: true },
+    { symbol: 'EUR/USD', price: '1.0872', change: '-0.12%', up: false },
+    { symbol: 'GBP/USD', price: '1.2654', change: '+0.34%', up: true },
+    { symbol: 'XRP/USD', price: '$0.5821', change: '+6.70%', up: true },
+    { symbol: 'S&P 500', price: '5,248.10', change: '+0.89%', up: true },
+    { symbol: 'NASDAQ', price: '16,741.20', change: '+1.02%', up: true },
+    { symbol: 'GOLD', price: '$2,341.80', change: '-0.28%', up: false },
+    { symbol: 'SOL/USD', price: '$148.60', change: '+3.51%', up: true },
+    { symbol: 'BNB/USD', price: '$592.40', change: '+1.87%', up: true },
+  ];
+
+  function buildTicker() {
+    const inner = document.getElementById('tickerInner');
+    const double = [...tickerData, ...tickerData];
+    inner.innerHTML = double.map(d => `
+      <div class="ticker-item">
+        <span class="symbol">${d.symbol}</span>
+        <span class="price">${d.price}</span>
+        <span class="change ${d.up ? 'up' : 'down'}">${d.change}</span>
+      </div>
+    `).join('');
+  }
+  buildTicker();
+
+  // LIVE PRICES
+  const coins = [
+    { name: 'Bitcoin', sym: 'BTC', price: 68420, chg: '+4.82%', up: true, color: '#f7931a', bg: 'rgba(247,147,26,0.15)' },
+    { name: 'Ethereum', sym: 'ETH', price: 3812, chg: '+2.14%', up: true, color: '#627eea', bg: 'rgba(98,126,234,0.15)' },
+    { name: 'Solana', sym: 'SOL', price: 148, chg: '+3.51%', up: true, color: '#9945ff', bg: 'rgba(153,69,255,0.15)' },
+    { name: 'XRP', sym: 'XRP', price: 0.58, chg: '+6.70%', up: true, color: '#00aae4', bg: 'rgba(0,170,228,0.15)' },
+    { name: 'EUR/USD', sym: 'FX', price: 1.0872, chg: '-0.12%', up: false, color: '#22d3a5', bg: 'rgba(34,211,165,0.15)' },
+    { name: 'Gold', sym: 'XAU', price: 2341, chg: '-0.28%', up: false, color: '#f5c842', bg: 'rgba(245,200,66,0.15)' },
+  ];
+
+  function buildPrices() {
+    const container = document.getElementById('livePrices');
+    container.innerHTML = coins.map(c => `
+      <div class="coin-row">
+        <div class="coin-info">
+          <div class="coin-icon" style="background:${c.bg};color:${c.color};">${c.sym.charAt(0)}</div>
+          <div>
+            <div class="coin-name">${c.name}</div>
+            <div class="coin-sym">${c.sym}</div>
+          </div>
+        </div>
+        <div>
+          <div class="coin-price">$${c.price.toLocaleString()}</div>
+          <div class="coin-chg ${c.up ? 'up' : 'dn'}">${c.chg}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+  buildPrices();
+
+  // Simulate live price updates
+  setInterval(() => {
+    coins.forEach(c => {
+      const change = (Math.random() - 0.48) * 0.002;
+      c.price = parseFloat((c.price * (1 + change)).toFixed(c.price < 10 ? 4 : 0));
+      const pct = (change * 100).toFixed(2);
+      c.chg = (change >= 0 ? '+' : '') + pct + '%';
+      c.up = change >= 0;
+    });
+    buildPrices();
+  }, 3000);
+
+  // ROTATING NOTIFICATION
+  const notifs = [
+    { name: 'Tebogo Mahlomolapelo', country: 'South Africa', amount: '$11,210' },
+    { name: 'James Craig', country: 'United States', amount: '$8,500' },
+    { name: 'Memphis Daniel', country: 'Philippines', amount: '₱300,000' },
+    { name: 'Aisha Mohammed', country: 'Nigeria', amount: '$4,200' },
+    { name: 'Chen Wei', country: 'Singapore', amount: '$15,800' },
+  ];
+  let notifIndex = 0;
+  setInterval(() => {
+    notifIndex = (notifIndex + 1) % notifs.length;
+    const n = notifs[notifIndex];
+    const bar = document.getElementById('notifBar');
+    bar.style.opacity = '0';
+    setTimeout(() => {
+      bar.querySelector('.notif-text').innerHTML = `<strong>${n.name}</strong> from ${n.country} just withdrew <strong>${n.amount}</strong>`;
+      bar.style.opacity = '1';
+      bar.style.transition = 'opacity 0.5s ease';
+    }, 400);
+  }, 5000);
+
+  // SCROLL ANIMATIONS
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.service-card, .plan-card, .feature-item, .testi-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>

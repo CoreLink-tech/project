@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZENTUROCAPITAL Dashboard</title>
+<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body data-client-page="dashboard" class="admin-page">
+  <div class="app-shell__frame">
+    <div class="app-shell__topbar">
+      <div class="admin-page__brand">
+        <div class="logo-icon">Z</div>
+        <div class="admin-page__brand-copy">
+          <span id="pageEyebrow">Client Workspace</span>
+          <strong id="pageTitle">Dashboard</strong>
+        </div>
+      </div>
+      <div class="app-shell__actions">
+        <button type="button" id="clientHomeBtn" class="btn btn-outline app-shell__ghost">Back To Site</button>
+        <button type="button" id="clientSignOutBtn" class="btn btn-gold">Sign Out</button>
+      </div>
+    </div>
+
+    <div class="app-shell__layout">
+      <aside class="app-shell__sidebar">
+        <div class="app-shell__profile">
+          <div id="clientAvatar" class="app-shell__avatar">A</div>
+          <div>
+            <div id="clientUserName" class="app-shell__name">Client User</div>
+            <div id="clientUserMeta" class="app-shell__meta">plan - email</div>
+          </div>
+        </div>
+        <nav id="clientSidebarNav" class="app-shell__nav app-shell__nav--links"></nav>
+        <div class="app-shell__status-card">
+          <div class="app-shell__status-kicker">Account Status</div>
+          <div id="clientStatusValue" class="app-shell__status-value">Loading</div>
+          <p id="clientStatusCopy">Preparing account summary.</p>
+        </div>
+      </aside>
+
+      <main class="app-shell__content">
+        <div class="dashboard-grid">
+          <article class="metric-card">
+            <div class="metric-card__label">Balance</div>
+            <div id="summaryBalance" class="metric-card__value">$0</div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-card__label">Performance</div>
+            <div id="summaryPerformance" class="metric-card__value">0.0%</div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-card__label">Status</div>
+            <div id="summaryStatus" class="metric-card__value">pending</div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid dashboard-grid--hero">
+          <article class="dashboard-panel dashboard-panel--primary">
+            <div class="dashboard-panel__header">
+              <div>
+                <div class="dashboard-panel__eyebrow">Overview</div>
+                <h3 class="dashboard-panel__headline">Everything important at a glance</h3>
+              </div>
+            </div>
+            <p class="dashboard-panel__copy">Use the sidebar to move through funding, portfolio, activity, and settings pages without leaving your workspace.</p>
+            <div class="metric-cards">
+              <div class="metric-card">
+                <div class="metric-card__label">Plan</div>
+                <div id="dashboardPlan" class="metric-card__value">Starter</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card__label">Account Balance</div>
+                <div id="dashboardBalance" class="metric-card__value">$0</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card__label">Performance</div>
+                <div id="dashboardPerformance" class="metric-card__value">0.0%</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="dashboard-panel">
+            <div class="dashboard-panel__header">
+              <div>
+                <div class="dashboard-panel__eyebrow">Compliance</div>
+              </div>
+            </div>
+            <div class="dashboard-status-list">
+              <div class="dashboard-status-row"><span>KYC</span><strong id="dashboardKyc">Pending</strong></div>
+              <div class="dashboard-status-row"><span>Approval</span><strong id="dashboardApproval">Pending</strong></div>
+              <div class="dashboard-status-row"><span>Advisor</span><strong id="dashboardAdvisor">Relationship Desk</strong></div>
+            </div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="dashboard-panel">
+            <div class="dashboard-panel__header">
+              <div>
+                <div class="dashboard-panel__eyebrow">Announcement</div>
+              </div>
+            </div>
+            <div id="dashboardAnnouncement" class="announcement-card"></div>
+          </article>
+
+          <article class="dashboard-panel">
+            <div class="dashboard-panel__header">
+              <div>
+                <div class="dashboard-panel__eyebrow">Recent Portfolio</div>
+              </div>
+            </div>
+            <div id="dashboardPortfolio" class="data-list"></div>
+          </article>
+        </div>
+
+        <article class="dashboard-panel">
+          <div class="dashboard-panel__header">
+            <div>
+              <div class="dashboard-panel__eyebrow">Recent Activity</div>
+            </div>
+          </div>
+          <div id="dashboardActivity" class="timeline-list"></div>
+        </article>
+      </main>
+    </div>
+  </div>
+
+  <div id="clientToast" class="auth-toast" aria-live="polite"></div>
+  <script src="shared.js" defer></script>
+  <script src="client-pages.js" defer></script>
+</body>
+</html>
