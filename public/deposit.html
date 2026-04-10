@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZENTUROCAPITAL Deposit</title>
+<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body data-client-page="deposit" class="admin-page">
+  <div class="app-shell__frame">
+    <div class="app-shell__topbar">
+      <div class="admin-page__brand">
+        <div class="logo-icon">Z</div>
+        <div class="admin-page__brand-copy">
+          <span id="pageEyebrow">Deposit</span>
+          <strong id="pageTitle">Fund your account</strong>
+        </div>
+      </div>
+      <div class="app-shell__actions">
+        <button type="button" id="clientHomeBtn" class="btn btn-outline app-shell__ghost">Back To Site</button>
+        <button type="button" id="clientSignOutBtn" class="btn btn-gold">Sign Out</button>
+      </div>
+    </div>
+    <div class="app-shell__layout">
+      <aside class="app-shell__sidebar">
+        <div class="app-shell__profile">
+          <div id="clientAvatar" class="app-shell__avatar">A</div>
+          <div>
+            <div id="clientUserName" class="app-shell__name">Client User</div>
+            <div id="clientUserMeta" class="app-shell__meta">plan - email</div>
+          </div>
+        </div>
+        <nav id="clientSidebarNav" class="app-shell__nav app-shell__nav--links"></nav>
+        <div class="app-shell__status-card">
+          <div class="app-shell__status-kicker">Account Status</div>
+          <div id="clientStatusValue" class="app-shell__status-value">Loading</div>
+          <p id="clientStatusCopy">Preparing funding tools.</p>
+        </div>
+      </aside>
+      <main class="app-shell__content">
+        <div class="dashboard-grid">
+          <article class="metric-card">
+            <div class="metric-card__label">Balance</div>
+            <div id="summaryBalance" class="metric-card__value">$0</div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-card__label">Performance</div>
+            <div id="summaryPerformance" class="metric-card__value">0.0%</div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-card__label">Status</div>
+            <div id="summaryStatus" class="metric-card__value">pending</div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="dashboard-panel">
+            <div class="dashboard-panel__header">
+              <div>
+                <div class="dashboard-panel__eyebrow">Step 1</div>
+                <h3 class="dashboard-panel__headline">Create a crypto deposit</h3>
+              </div>
+            </div>
+            <div id="depositStepEntry" class="request-step">
+              <form id="depositRequestForm" class="dashboard-form">
+                <div class="dashboard-form__split">
+                  <label class="dashboard-field">
+                    <span>Cryptocurrency</span>
+                    <select name="asset">
+                      <option value="BTC">Bitcoin (BTC)</option>
+                      <option value="ETH">Ethereum (ETH)</option>
+                      <option value="USDT">Tether (USDT - TRC20)</option>
+                      <option value="BNB">BNB Smart Chain (BNB)</option>
+                    </select>
+                  </label>
+                  <label class="dashboard-field">
+                    <span>Amount</span>
+                    <input type="number" name="amount" min="1" step="1" placeholder="1000" required>
+                  </label>
+                </div>
+                <label class="dashboard-field">
+                  <span>Deposit Note</span>
+                  <textarea name="notes" rows="3" placeholder="Optional note for the admin desk"></textarea>
+                </label>
+                <button type="submit" class="btn btn-gold">Next</button>
+              </form>
+            </div>
+
+            <div id="depositStepCheckout" class="request-step is-hidden">
+              <div class="request-step__summary">
+                <div class="request-step__summary-row"><span>Asset</span><strong id="depositSelectedAsset">Bitcoin (BTC)</strong></div>
+                <div class="request-step__summary-row"><span>Amount</span><strong id="depositSelectedAmount">$0</strong></div>
+                <div class="request-step__summary-row"><span>Network</span><strong id="depositSelectedNetwork">Bitcoin</strong></div>
+              </div>
+              <label class="dashboard-field">
+                <span>Wallet Address</span>
+                <input id="depositWalletAddress" class="request-wallet" type="text" readonly>
+              </label>
+              <div class="request-step__actions">
+                <button type="button" id="depositBackBtn" class="btn btn-outline">Back</button>
+                <button type="button" id="depositCopyBtn" class="btn btn-outline">Copy Address</button>
+                <button type="button" id="depositConfirmBtn" class="btn btn-gold">I Have Made Payment</button>
+              </div>
+            </div>
+            <div id="depositRequestMessage" class="dashboard-message" aria-live="polite"></div>
+          </article>
+
+          <article class="dashboard-panel">
+            <div class="dashboard-panel__header">
+              <div>
+                <div class="dashboard-panel__eyebrow">Instructions</div>
+              </div>
+            </div>
+            <div class="timeline-list">
+              <div class="timeline-item"><div class="timeline-item__title">Choose a supported coin</div><div class="timeline-item__meta">Pick BTC, ETH, USDT, or BNB from the form.</div></div>
+              <div class="timeline-item"><div class="timeline-item__title">Copy the wallet address</div><div class="timeline-item__meta">Use the checkout screen to copy the exact address for your selected network.</div></div>
+              <div class="timeline-item"><div class="timeline-item__title">Notify the admin desk</div><div class="timeline-item__meta">Click “I Have Made Payment” to submit the deposit for approval and balance crediting.</div></div>
+            </div>
+          </article>
+        </div>
+
+        <article class="dashboard-panel">
+          <div class="dashboard-panel__header">
+            <div>
+              <div class="dashboard-panel__eyebrow">Deposit History</div>
+            </div>
+          </div>
+          <div id="depositHistory" class="table-list"></div>
+        </article>
+      </main>
+    </div>
+  </div>
+  <div id="clientToast" class="auth-toast" aria-live="polite"></div>
+  <script src="shared.js" defer></script>
+  <script src="client-pages.js" defer></script>
+</body>
+</html>

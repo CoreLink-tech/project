@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZENTUROCAPITAL Admin</title>
+<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="admin-page">
+    <div class="app-shell__frame">
+      <div class="app-shell__topbar">
+        <div class="admin-page__brand">
+          <div class="logo-icon">Z</div>
+          <div class="admin-page__brand-copy">
+            <span>Admin Control</span>
+            <strong>ZENTUROCAPITAL operations desk</strong>
+          </div>
+        </div>
+        <div class="app-shell__actions">
+          <button type="button" id="adminHomeBtn" class="btn btn-outline app-shell__ghost">Back To Site</button>
+          <button type="button" id="adminSignOutBtn" class="btn btn-gold">Sign Out</button>
+        </div>
+      </div>
+
+      <div class="app-shell__layout">
+        <aside class="app-shell__sidebar">
+          <div class="app-shell__profile">
+            <div id="adminAvatar" class="app-shell__avatar">A</div>
+            <div>
+              <div id="adminUserName" class="app-shell__name">Platform Admin</div>
+              <div id="adminUserMeta" class="app-shell__meta">Full platform access</div>
+            </div>
+          </div>
+
+        <nav class="app-shell__nav app-shell__nav--links">
+          <a href="#admin-approvals" class="is-active"><span>Approvals</span><span>Go</span></a>
+          <a href="#admin-requests"><span>Requests</span><span>Go</span></a>
+          <a href="#admin-settings"><span>Client Settings</span><span>Go</span></a>
+          <a href="#admin-broadcast"><span>Announcements</span><span>Go</span></a>
+        </nav>
+
+          <div class="app-shell__status-card">
+            <div class="app-shell__status-kicker">Workspace Status</div>
+            <div id="adminStatusValue" class="app-shell__status-value">Checking</div>
+            <p id="adminStatusCopy">Loading admin controls.</p>
+          </div>
+        </aside>
+
+        <main class="app-shell__content">
+          <div class="dashboard-grid">
+            <article class="metric-card">
+              <div class="metric-card__label">Pending Clients</div>
+              <div id="adminPendingCount" class="metric-card__value">0</div>
+            </article>
+            <article class="metric-card">
+              <div class="metric-card__label">Approved Clients</div>
+              <div id="adminApprovedCount" class="metric-card__value">0</div>
+            </article>
+            <article class="metric-card">
+              <div class="metric-card__label">Pending Requests</div>
+              <div id="adminRequestCount" class="metric-card__value">0</div>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article id="admin-approvals" class="dashboard-panel">
+              <div class="dashboard-panel__header">
+                <div>
+                  <div class="dashboard-panel__eyebrow">Registration Queue</div>
+                  <h3 class="dashboard-panel__headline">Client approvals</h3>
+                </div>
+              </div>
+              <p class="dashboard-panel__copy">Review newly created client accounts and decide who gets access to the live funding workspace.</p>
+              <div id="adminPendingList" class="table-list"></div>
+            </article>
+
+            <article id="admin-requests" class="dashboard-panel">
+              <div class="dashboard-panel__header">
+                <div>
+                  <div class="dashboard-panel__eyebrow">Funding Queue</div>
+                  <h3 class="dashboard-panel__headline">Deposits and withdrawals</h3>
+                </div>
+              </div>
+              <p class="dashboard-panel__copy">Approve or decline pending client funding requests. Approved deposits add to account balances automatically.</p>
+              <div id="adminRequestsList" class="table-list"></div>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article id="admin-settings" class="dashboard-panel">
+              <div class="dashboard-panel__header">
+                <div>
+                  <div class="dashboard-panel__eyebrow">Client Settings</div>
+                </div>
+              </div>
+              <form id="adminClientForm" class="dashboard-form">
+                <input type="hidden" name="clientId">
+                <label class="dashboard-field">
+                  <span>Client Name</span>
+                  <input type="text" name="name">
+                </label>
+                <label class="dashboard-field">
+                  <span>Client</span>
+                  <select id="adminClientSelect"></select>
+                </label>
+                <div class="dashboard-form__split">
+                  <label class="dashboard-field">
+                    <span>Plan</span>
+                    <select name="plan">
+                      <option value="Starter">Starter</option>
+                      <option value="Silver">Silver</option>
+                      <option value="Gold">Gold</option>
+                      <option value="Platinum">Platinum</option>
+                    </select>
+                  </label>
+                  <label class="dashboard-field">
+                    <span>Status</span>
+                    <select name="status">
+                      <option value="pending">Pending</option>
+                      <option value="approved">Approved</option>
+                      <option value="suspended">Suspended</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="dashboard-form__split">
+                  <label class="dashboard-field">
+                    <span>Balance</span>
+                    <input type="number" name="balance" min="0" step="1">
+                  </label>
+                  <label class="dashboard-field">
+                    <span>Performance</span>
+                    <input type="number" name="performance" step="0.1">
+                  </label>
+                </div>
+                <label class="dashboard-field">
+                  <span>KYC</span>
+                  <select name="kyc">
+                    <option value="Pending">Pending</option>
+                    <option value="Verified">Verified</option>
+                  </select>
+                </label>
+                <label class="dashboard-field">
+                  <span>Internal Note</span>
+                  <textarea name="note" rows="3" placeholder="Add a note to the client activity log"></textarea>
+                </label>
+                <button type="submit" class="btn btn-gold">Save Client Settings</button>
+              </form>
+              <div id="adminClientMessage" class="dashboard-message" aria-live="polite"></div>
+            </article>
+
+            <article id="admin-broadcast" class="dashboard-panel">
+              <div class="dashboard-panel__header">
+                <div>
+                  <div class="dashboard-panel__eyebrow">Broadcast Announcement</div>
+                </div>
+              </div>
+              <form id="adminAnnouncementForm" class="dashboard-form">
+                <label class="dashboard-field">
+                  <span>Headline</span>
+                  <input type="text" name="headline" placeholder="Platform notice">
+                </label>
+                <label class="dashboard-field">
+                  <span>Message</span>
+                  <textarea name="message" rows="5" placeholder="Write the message clients should see in their dashboards"></textarea>
+                </label>
+                <button type="submit" class="btn btn-gold">Publish Announcement</button>
+              </form>
+              <div id="adminAnnouncementMessage" class="dashboard-message" aria-live="polite"></div>
+            </article>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <div id="adminToast" class="auth-toast" aria-live="polite"></div>
+  <script src="shared.js" defer></script>
+  <script src="admin.js" defer></script>
+</body>
+</html>
