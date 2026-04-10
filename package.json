@@ -1,0 +1,24 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "description": "miracle",
+  "main": "admin.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CoreLink-tech/project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/CoreLink-tech/project/issues"
+  },
+  "homepage": "https://github.com/CoreLink-tech/project#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.103.0"
+  }
+}

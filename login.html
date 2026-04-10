@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In - Quadzedge</title>
+<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c14;
+    --bg2: #0d1220;
+    --card: #111827;
+    --border: rgba(255,255,255,0.07);
+    --gold: #f5c842;
+    --gold2: #e8a816;
+    --green: #22d3a5;
+    --blue: #3b82f6;
+    --text: #e8eaf0;
+    --muted: #8b95a8;
+    --radius: 16px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-container {
+    width: 100%;
+    max-width: 480px;
+    padding: 40px 24px;
+  }
+
+  .login-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .login-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 32px;
+  }
+
+  .login-logo-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 900;
+    color: #080c14;
+  }
+
+  .login-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .login-subtitle {
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  .login-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    background: rgba(255,255,255,0.03);
+    padding: 6px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .login-tab {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .login-tab.active {
+    background: linear-gradient(135deg, rgba(245,200,66,0.2), rgba(245,200,66,0.1));
+    color: var(--text);
+  }
+
+  .login-panel {
+    display: none;
+  }
+
+  .login-panel.active {
+    display: block;
+  }
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .login-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .login-field label {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .login-field input,
+  .login-field select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.04);
+    color: var(--text);
+    font: inherit;
+    font-size: 15px;
+  }
+
+  .login-field input:focus,
+  .login-field select:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(245,200,66,0.1);
+  }
+
+  .login-field input::placeholder {
+    color: var(--muted);
+    opacity: 0.6;
+  }
+
+  .login-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .login-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .login-checkbox input {
+    accent-color: var(--gold);
+  }
+
+  .login-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .login-forgot {
+    background: none;
+    border: none;
+    color: var(--gold);
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .login-forgot:hover {
+    text-decoration: underline;
+  }
+
+  .login-message {
+    min-height: 20px;
+    color: #e29a9a;
+    font-size: 14px;
+  }
+
+  .login-message.info {
+    color: var(--gold);
+  }
+
+  .login-message.success {
+    color: var(--green);
+  }
+
+  .login-btn {
+    width: 100%;
+    padding: 16px 24px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: #080c14;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(245,200,66,0.3);
+  }
+
+  .login-btn.secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .login-btn.secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .login-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 24px 0;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .login-divider::before,
+  .login-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .login-back {
+    text-align: center;
+    margin-top: 24px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .login-back a {
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .login-back a:hover {
+    text-decoration: underline;
+  }
+
+  .login-demo {
+    margin-top: 24px;
+    padding: 20px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .login-demo-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .login-demo-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .login-demo-item:last-child {
+    border-bottom: none;
+  }
+
+  .login-demo-label {
+    color: var(--muted);
+  }
+
+  .login-demo-value {
+    color: var(--text);
+    font-family: monospace;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="login-container">
+  <div class="login-header">
+    <div class="login-logo">
+      <div class="login-logo-icon">Q</div>
+      Quadzedge
+    </div>
+    <h1 class="login-title">Welcome back</h1>
+    <p class="login-subtitle">Sign in to access your trading workspace</p>
+  </div>
+
+  <div class="login-tabs">
+    <button type="button" class="login-tab active" data-tab="signin">Sign In</button>
+    <button type="button" class="login-tab" data-tab="signup">Create Account</button>
+  </div>
+
+  <div class="login-panel active" data-panel="signin">
+    <form id="signinForm" class="login-form">
+      <div class="login-field">
+        <label for="signinEmail">Email Address</label>
+        <input type="email" id="signinEmail" name="email" placeholder="you@example.com" required>
+      </div>
+      <div class="login-field">
+        <label for="signinPassword">Password</label>
+        <input type="password" id="signinPassword" name="password" placeholder="Enter your password" required>
+      </div>
+      <div class="login-meta">
+        <label class="login-checkbox">
+          <input type="checkbox" name="remember">
+          <span>Remember me</span>
+        </label>
+        <button type="button" class="login-forgot" id="forgotPasswordBtn">Forgot password?</button>
+      </div>
+      <div id="signinMessage" class="login-message"></div>
+      <button type="submit" class="login-btn">Sign In</button>
+    </form>
+  </div>
+
+  <div class="login-panel" data-panel="signup">
+    <form id="signupForm" class="login-form">
+      <div class="login-row">
+        <div class="login-field">
+          <label for="signupName">Full Name</label>
+          <input type="text" id="signupName" name="name" placeholder="John Doe" required>
+        </div>
+        <div class="login-field">
+          <label for="signupEmail">Email Address</label>
+          <input type="email" id="signupEmail" name="email" placeholder="you@example.com" required>
+        </div>
+      </div>
+      <div class="login-row">
+        <div class="login-field">
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" name="password" placeholder="Min 8 characters" required>
+        </div>
+        <div class="login-field">
+          <label for="signupConfirm">Confirm Password</label>
+          <input type="password" id="signupConfirm" name="confirmPassword" placeholder="Repeat password" required>
+        </div>
+      </div>
+      <div class="login-field">
+        <label for="signupPlan">Investment Plan</label>
+        <select id="signupPlan" name="plan">
+          <option value="Starter">Starter - $1,000 to $5,000</option>
+          <option value="Silver">Silver - $5,000 to $50,000</option>
+          <option value="Gold">Gold - $50,000 to $100,000</option>
+          <option value="Platinum">Platinum - $100,000+</option>
+        </select>
+      </div>
+      <label class="login-checkbox">
+        <input type="checkbox" name="terms" id="signupTerms">
+        <span>I agree to the terms and account review process</span>
+      </label>
+      <div id="signupMessage" class="login-message"></div>
+      <button type="submit" class="login-btn">Create Account</button>
+    </form>
+  </div>
+
+  <div class="login-divider">Demo Credentials</div>
+
+  <div class="login-demo">
+    <div class="login-demo-title">Test Accounts</div>
+    <div class="login-demo-item">
+      <span class="login-demo-label">Client</span>
+      <span class="login-demo-value">ava@zenturocapital.com / Client123!</span>
+    </div>
+    <div class="login-demo-item">
+      <span class="login-demo-label">Admin</span>
+      <span class="login-demo-value">admin@zenturocapital.com / Admin123!</span>
+    </div>
+  </div>
+
+  <div class="login-back">
+    <a href="index.html">← Back to homepage</a>
+  </div>
+</div>
+
+<script src="shared.js" defer></script>
+<script>
+const {
+  ADMIN_HOME_URL,
+  CLIENT_HOME_URL,
+  createActivity,
+  findUser,
+  getDb,
+  readSession,
+  saveDb,
+  saveSession
+} = window.ZenturoShared;
+
+const $ = selector => document.querySelector(selector);
+const $$ = selector => document.querySelectorAll(selector);
+
+const signinForm = $("#signinForm");
+const signupForm = $("#signupForm");
+const signinMessage = $("#signinMessage");
+const signupMessage = $("#signupMessage");
+const tabs = $$(".login-tab");
+const panels = $$(".login-panel");
+
+function setMessage(target, message, type = "error") {
+  if (!target) return;
+  target.textContent = message;
+  target.className = "login-message";
+  if (type === "info") target.classList.add("info");
+  if (type === "success") target.classList.add("success");
+}
+
+function clearMessage(target) {
+  if (!target) return;
+  target.textContent = "";
+  target.className = "login-message";
+}
+
+function switchTab(tabName) {
+  tabs.forEach(tab => {
+    tab.classList.toggle("active", tab.dataset.tab === tabName);
+  });
+  panels.forEach(panel => {
+    panel.classList.toggle("active", panel.dataset.panel === tabName);
+  });
+  clearMessage(signinMessage);
+  clearMessage(signupMessage);
+}
+
+tabs.forEach(tab => {
+  tab.addEventListener("click", () => switchTab(tab.dataset.tab));
+});
+
+$("#forgotPasswordBtn").addEventListener("click", () => {
+  const email = signinForm.elements.email.value.trim();
+  setMessage(
+    signinMessage,
+    email
+      ? `Password reset instructions sent to ${email}.`
+      : "Enter your email first.",
+    email ? "info" : "error"
+  );
+});
+
+signinForm.addEventListener("submit", event => {
+  event.preventDefault();
+  clearMessage(signinMessage);
+
+  const formData = new FormData(signinForm);
+  const email = String(formData.get("email") || "").trim().toLowerCase();
+  const password = String(formData.get("password") || "").trim();
+  const remember = Boolean(formData.get("remember"));
+
+  if (!email || !password) {
+    setMessage(signinMessage, "Please enter email and password.");
+    return;
+  }
+
+  const db = getDb();
+  const user = db.users.find(item => item.email === email);
+
+  if (!user || user.password !== password) {
+    setMessage(signinMessage, "Invalid email or password. Try the demo credentials below.");
+    return;
+  }
+
+  user.activity.unshift(createActivity("Session started", "User signed in to the workspace."));
+  saveDb(db);
+  saveSession({ userId: user.id }, remember);
+
+  const redirectUrl = user.role === "admin" ? ADMIN_HOME_URL : CLIENT_HOME_URL;
+  window.location.href = redirectUrl;
+});
+
+signupForm.addEventListener("submit", event => {
+  event.preventDefault();
+  clearMessage(signupMessage);
+
+  const formData = new FormData(signupForm);
+  const db = getDb();
+  const name = String(formData.get("name") || "").trim();
+  const email = String(formData.get("email") || "").trim().toLowerCase();
+  const password = String(formData.get("password") || "");
+  const confirmPassword = String(formData.get("confirmPassword") || "");
+  const plan = String(formData.get("plan") || "Starter");
+  const acceptedTerms = Boolean(formData.get("terms"));
+
+  if (!name || !email || !password || !confirmPassword) {
+    setMessage(signupMessage, "Please fill in all required fields.");
+    return;
+  }
+
+  if (password.length < 8) {
+    setMessage(signupMessage, "Password must be at least 8 characters.");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    setMessage(signupMessage, "Passwords do not match.");
+    return;
+  }
+
+  if (!acceptedTerms) {
+    setMessage(signupMessage, "You must agree to the terms.");
+    return;
+  }
+
+  if (db.users.some(user => user.email === email)) {
+    setMessage(signupMessage, "An account with this email already exists. Try signing in instead.");
+    switchTab("signin");
+    signinForm.elements.email.value = email;
+    return;
+  }
+
+  const user = {
+    id: `user-${Math.random().toString(36).slice(2, 10)}`,
+    role: "client",
+    status: "pending",
+    name: name,
+    email: email,
+    password: password,
+    plan: plan,
+    kyc: "Pending",
+    advisor: "Assignment pending",
+    balance: 0,
+    performance: 0,
+    createdAt: new Date().toISOString(),
+    portfolio: [],
+    activity: [
+      createActivity(
+        "Registration submitted",
+        `Client registered for the ${plan} plan and is waiting for admin approval.`
+      )
+    ]
+  };
+
+  db.users.push(user);
+  saveDb(db);
+  saveSession({ userId: user.id }, true);
+
+  window.location.href = CLIENT_HOME_URL;
+});
+
+const session = readSession();
+if (session && session.userId) {
+  const db = getDb();
+  const user = findUser(db, session);
+  if (user) {
+    const redirectUrl = user.role === "admin" ? ADMIN_HOME_URL : CLIENT_HOME_URL;
+    window.location.href = redirectUrl;
+  }
+}
+</script>
+</body>
+</html>
