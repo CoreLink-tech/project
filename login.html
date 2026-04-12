@@ -242,23 +242,6 @@
     color: var(--gold);
   }
 
-  .login-divider {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin: 24px 0;
-    color: var(--muted);
-    font-size: 13px;
-  }
-
-  .login-divider::before,
-  .login-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
   .login-back {
     text-align: center;
     margin-top: 24px;
@@ -275,44 +258,6 @@
     text-decoration: underline;
   }
 
-  .login-demo {
-    margin-top: 24px;
-    padding: 20px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-  }
-
-  .login-demo-title {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 12px;
-  }
-
-  .login-demo-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    font-size: 13px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .login-demo-item:last-child {
-    border-bottom: none;
-  }
-
-  .login-demo-label {
-    color: var(--muted);
-  }
-
-  .login-demo-value {
-    color: var(--text);
-    font-family: monospace;
-    font-size: 12px;
-  }
 </style>
 </head>
 <body>
@@ -393,36 +338,25 @@
     </form>
   </div>
 
-  <div class="login-divider">Demo Credentials</div>
-
-  <div class="login-demo">
-    <div class="login-demo-title">Test Accounts</div>
-    <div class="login-demo-item">
-      <span class="login-demo-label">Client</span>
-      <span class="login-demo-value">ava@zenturocapital.com / Client123!</span>
-    </div>
-    <div class="login-demo-item">
-      <span class="login-demo-label">Admin</span>
-      <span class="login-demo-value">admin@zenturocapital.com / Admin123!</span>
-    </div>
-  </div>
-
   <div class="login-back">
-    <a href="index.html">← Back to homepage</a>
+    <a href="index.html">&larr; Back to homepage</a>
   </div>
 </div>
 
-<script src="shared.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="shared.js"></script>
 <script>
 const {
   ADMIN_HOME_URL,
   CLIENT_HOME_URL,
-  createActivity,
   findUser,
   getDb,
   readSession,
-  saveDb,
-  saveSession
+  signInWithSupabase,
+  signUpWithSupabase,
+  resetPasswordWithSupabase,
+  syncSessionFromSupabase
 } = window.ZenturoShared;
 
 const $ = selector => document.querySelector(selector);
@@ -464,18 +398,27 @@ tabs.forEach(tab => {
   tab.addEventListener("click", () => switchTab(tab.dataset.tab));
 });
 
-$("#forgotPasswordBtn").addEventListener("click", () => {
-  const email = signinForm.elements.email.value.trim();
-  setMessage(
-    signinMessage,
-    email
-      ? `Password reset instructions sent to ${email}.`
-      : "Enter your email first.",
-    email ? "info" : "error"
-  );
+const authMode = new URLSearchParams(window.location.search).get("mode");
+if (authMode === "signup" || authMode === "signin") {
+  switchTab(authMode);
+}
+
+$("#forgotPasswordBtn").addEventListener("click", async () => {
+  const email = signinForm.elements.email.value.trim().toLowerCase();
+  if (!email) {
+    setMessage(signinMessage, "Enter your email first.");
+    return;
+  }
+
+  try {
+    await resetPasswordWithSupabase(email);
+    setMessage(signinMessage, `Password reset instructions sent to ${email}.`, "info");
+  } catch (error) {
+    setMessage(signinMessage, error?.message || "We could not send a reset email right now.");
+  }
 });
 
-signinForm.addEventListener("submit", event => {
+signinForm.addEventListener("submit", async event => {
   event.preventDefault();
   clearMessage(signinMessage);
 
@@ -489,28 +432,20 @@ signinForm.addEventListener("submit", event => {
     return;
   }
 
-  const db = getDb();
-  const user = db.users.find(item => item.email === email);
-
-  if (!user || user.password !== password) {
-    setMessage(signinMessage, "Invalid email or password. Try the demo credentials below.");
-    return;
+  try {
+    const { user } = await signInWithSupabase(email, password, remember);
+    const redirectUrl = user.role === "admin" ? ADMIN_HOME_URL : CLIENT_HOME_URL;
+    window.location.href = redirectUrl;
+  } catch (error) {
+    setMessage(signinMessage, error?.message || "Invalid email or password.");
   }
-
-  user.activity.unshift(createActivity("Session started", "User signed in to the workspace."));
-  saveDb(db);
-  saveSession({ userId: user.id }, remember);
-
-  const redirectUrl = user.role === "admin" ? ADMIN_HOME_URL : CLIENT_HOME_URL;
-  window.location.href = redirectUrl;
 });
 
-signupForm.addEventListener("submit", event => {
+signupForm.addEventListener("submit", async event => {
   event.preventDefault();
   clearMessage(signupMessage);
 
   const formData = new FormData(signupForm);
-  const db = getDb();
   const name = String(formData.get("name") || "").trim();
   const email = String(formData.get("email") || "").trim().toLowerCase();
   const password = String(formData.get("password") || "");
@@ -538,51 +473,26 @@ signupForm.addEventListener("submit", event => {
     return;
   }
 
-  if (db.users.some(user => user.email === email)) {
-    setMessage(signupMessage, "An account with this email already exists. Try signing in instead.");
-    switchTab("signin");
-    signinForm.elements.email.value = email;
-    return;
+  try {
+    const result = await signUpWithSupabase({ name, email, password, plan, remember: true });
+    window.location.href = result.user.role === "admin" ? ADMIN_HOME_URL : CLIENT_HOME_URL;
+  } catch (error) {
+    setMessage(signupMessage, error?.message || "We could not create your account right now.");
   }
-
-  const user = {
-    id: `user-${Math.random().toString(36).slice(2, 10)}`,
-    role: "client",
-    status: "pending",
-    name: name,
-    email: email,
-    password: password,
-    plan: plan,
-    kyc: "Pending",
-    advisor: "Assignment pending",
-    balance: 0,
-    performance: 0,
-    createdAt: new Date().toISOString(),
-    portfolio: [],
-    activity: [
-      createActivity(
-        "Registration submitted",
-        `Client registered for the ${plan} plan and is waiting for admin approval.`
-      )
-    ]
-  };
-
-  db.users.push(user);
-  saveDb(db);
-  saveSession({ userId: user.id }, true);
-
-  window.location.href = CLIENT_HOME_URL;
 });
 
-const session = readSession();
-if (session && session.userId) {
-  const db = getDb();
-  const user = findUser(db, session);
-  if (user) {
-    const redirectUrl = user.role === "admin" ? ADMIN_HOME_URL : CLIENT_HOME_URL;
-    window.location.href = redirectUrl;
-  }
-}
+void syncSessionFromSupabase()
+  .catch(() => null)
+  .finally(() => {
+    const session = readSession();
+    if (!session || !session.userId) return;
+    const db = getDb();
+    const user = findUser(db, session);
+    if (user) {
+      const redirectUrl = user.role === "admin" ? ADMIN_HOME_URL : CLIENT_HOME_URL;
+      window.location.href = redirectUrl;
+    }
+  });
 </script>
 </body>
 </html>

@@ -8,7 +8,39 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="admin-page">
+  <section id="adminAuthGate" class="login-container" style="max-width:520px; padding:40px 24px; display:none;">
+    <div class="login-header">
+      <div class="login-logo">
+        <div class="login-logo-icon">Z</div>
+        ZENTUROCAPITAL
+      </div>
+      <h1 class="login-title">Admin sign in</h1>
+      <p class="login-subtitle">Use your administrator account to open the operations desk.</p>
+    </div>
+
+    <form id="adminSigninForm" class="login-form">
+      <div class="login-field">
+        <label for="adminSigninEmail">Email Address</label>
+        <input type="email" id="adminSigninEmail" name="email" placeholder="admin@example.com" required>
+      </div>
+      <div class="login-field">
+        <label for="adminSigninPassword">Password</label>
+        <input type="password" id="adminSigninPassword" name="password" placeholder="Enter your password" required>
+      </div>
+      <div class="login-meta">
+        <label class="login-checkbox">
+          <input type="checkbox" name="remember">
+          <span>Remember me</span>
+        </label>
+        <button type="button" class="login-forgot" id="adminForgotPasswordBtn">Forgot password?</button>
+      </div>
+      <div id="adminSigninMessage" class="login-message" aria-live="polite"></div>
+      <button type="submit" class="login-btn">Open Admin Desk</button>
+      <button type="button" id="adminBackToLoginBtn" class="login-btn secondary">Go To Main Login</button>
+    </form>
+  </section>
+
+  <div id="adminDashboardShell" class="admin-page" style="display:none;">
     <div class="app-shell__frame">
       <div class="app-shell__topbar">
         <div class="admin-page__brand">
@@ -176,6 +208,8 @@
   </div>
 
   <div id="adminToast" class="auth-toast" aria-live="polite"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js" defer></script>
   <script src="shared.js" defer></script>
   <script src="admin.js" defer></script>
 </body>

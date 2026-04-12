@@ -1,12 +1,13 @@
 const {
   ADMIN_HOME_URL,
   CLIENT_HOME_URL,
-  createActivity,
   findUser,
   getDb,
   readSession,
-  saveDb,
-  saveSession
+  resetPasswordWithSupabase,
+  signInWithSupabase,
+  signUpWithSupabase,
+  syncSessionFromSupabase
 } = window.ZenturoShared;
 
 const $ = selector => document.querySelector(selector);
@@ -115,12 +116,15 @@ mobileNav?.querySelectorAll("a").forEach(anchor => {
 
 authTriggers.forEach(trigger => {
   trigger.addEventListener("click", event => {
-    event.preventDefault();
     const user = findUser(getDb(), readSession());
     if (user) {
+      event.preventDefault();
       routeUser(user);
       return;
     }
+    const href = trigger.getAttribute("href");
+    if (href && href !== "#") return;
+    event.preventDefault();
     openAuthModal(trigger.dataset.authTrigger);
   });
 });
@@ -136,7 +140,7 @@ document.addEventListener("keydown", event => {
   }
 });
 
-signinForm.addEventListener("submit", event => {
+signinForm.addEventListener("submit", async event => {
   event.preventDefault();
   clearMessage(signinMessage);
 
@@ -144,37 +148,31 @@ signinForm.addEventListener("submit", event => {
   const email = String(formData.get("email") || "").trim().toLowerCase();
   const password = String(formData.get("password") || "");
   const remember = Boolean(formData.get("remember"));
-  const db = getDb();
-  const user = db.users.find(item => item.email === email);
 
   if (!email || !password) {
     setMessage(signinMessage, "Enter your email address and password to continue.");
     return;
   }
 
-  if (!user || user.password !== password) {
+  try {
+    const { user } = await signInWithSupabase(email, password, remember);
+    closeAuthModal();
+    signinForm.reset();
+    signupForm.reset();
+    routeUser(user);
+  } catch (error) {
     setMessage(
       signinMessage,
-      "We could not match that account. Check your credentials or create a new account."
+      error?.message || "We could not match that account. Check your credentials or create a new account."
     );
-    return;
   }
-
-  user.activity.unshift(createActivity("Session started", "User signed in to the workspace."));
-  saveDb(db);
-  saveSession({ userId: user.id }, remember);
-  closeAuthModal();
-  signinForm.reset();
-  signupForm.reset();
-  routeUser(user);
 });
 
-signupForm.addEventListener("submit", event => {
+signupForm.addEventListener("submit", async event => {
   event.preventDefault();
   clearMessage(signupMessage);
 
   const formData = new FormData(signupForm);
-  const db = getDb();
   const name = String(formData.get("name") || "").trim();
   const email = String(formData.get("email") || "").trim().toLowerCase();
   const password = String(formData.get("password") || "");
@@ -202,51 +200,37 @@ signupForm.addEventListener("submit", event => {
     return;
   }
 
-  if (db.users.some(user => user.email === email)) {
-    setMessage(signupMessage, "An account with that email already exists. Sign in instead.");
-    switchAuthTab("signin");
-    signinForm.elements.email.value = email;
+  try {
+    const result = await signUpWithSupabase({ name, email, password, plan, remember: true });
+    if (result.requiresEmailConfirmation) {
+      setMessage(
+        signupMessage,
+        "Your account was created in Supabase. Check your email to confirm it before signing in.",
+        "info"
+      );
+      signupForm.reset();
+      return;
+    }
+    closeAuthModal();
+    routeUser(result.user);
+  } catch (error) {
+    setMessage(signupMessage, error?.message || "We could not create your account right now.");
+  }
+});
+
+forgotPasswordBtn.addEventListener("click", async () => {
+  const email = String(signinForm.elements.email.value || "").trim().toLowerCase();
+  if (!email) {
+    setMessage(signinMessage, "Enter your email address first and we will send the reset link there.");
     return;
   }
 
-  const user = {
-    id: `user-${Math.random().toString(36).slice(2, 10)}`,
-    role: "client",
-    status: "pending",
-    name,
-    email,
-    password,
-    plan,
-    kyc: "Pending",
-    advisor: "Assignment pending",
-    balance: 0,
-    performance: 0,
-    createdAt: new Date().toISOString(),
-    portfolio: [],
-    activity: [
-      createActivity(
-        "Registration submitted",
-        `Client registered for the ${plan} plan and is waiting for admin approval.`
-      )
-    ]
-  };
-
-  db.users.push(user);
-  saveDb(db);
-  saveSession({ userId: user.id }, true);
-  closeAuthModal();
-  routeUser(user);
-});
-
-forgotPasswordBtn.addEventListener("click", () => {
-  const email = String(signinForm.elements.email.value || "").trim();
-  setMessage(
-    signinMessage,
-    email
-      ? `Password reset instructions have been prepared for ${email}.`
-      : "Enter your email address first and we will prepare a reset message.",
-    "info"
-  );
+  try {
+    await resetPasswordWithSupabase(email);
+    setMessage(signinMessage, `Password reset instructions have been sent to ${email}.`, "info");
+  } catch (error) {
+    setMessage(signinMessage, error?.message || "We could not send a reset email right now.");
+  }
 });
 
 $$(".faq-q").forEach(node => {
@@ -352,12 +336,16 @@ $$(".service-card, .plan-card, .feature-item, .testi-card").forEach(node => {
 
 buildTicker();
 buildPrices();
-updateAuthUI();
 
-const sessionUser = findUser(getDb(), readSession());
-if (sessionUser) {
-  showToast(`Signed in as ${sessionUser.name}.`);
-}
+void syncSessionFromSupabase()
+  .catch(() => null)
+  .finally(() => {
+    updateAuthUI();
+    const sessionUser = findUser(getDb(), readSession());
+    if (sessionUser) {
+      showToast(`Signed in as ${sessionUser.name}.`);
+    }
+  });
 
 window.addEventListener("beforeunload", () => {
   clearTimeout(showToast.timer);

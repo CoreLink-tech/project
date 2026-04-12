@@ -703,8 +703,8 @@
   <a href="#faq">FAQ</a>
   <a href="#contact">Contact</a>
   <div style="display:flex;gap:12px;margin-top:20px;">
-    <a href="#" class="btn btn-outline" data-auth-trigger="signin">Sign In</a>
-    <a href="#" class="btn btn-gold" data-auth-trigger="signup">Get Started</a>
+    <a href="login.html" class="btn btn-outline" data-auth-trigger="signin">Sign In</a>
+    <a href="login.html?mode=signup" class="btn btn-gold" data-auth-trigger="signup">Get Started</a>
   </div>
 </div>
 
@@ -746,8 +746,8 @@
     </ul>
     <div class="nav-cta">
       <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
-      <a href="#" class="btn btn-outline" data-auth-trigger="signin">Sign In</a>
-      <a href="#" class="btn btn-gold" data-auth-trigger="signup">Sign Up</a>
+      <a href="login.html" class="btn btn-outline" data-auth-trigger="signin">Sign In</a>
+      <a href="login.html?mode=signup" class="btn btn-gold" data-auth-trigger="signup">Sign Up</a>
     </div>
     <div class="hamburger" id="hamburger">
       <span></span><span></span><span></span>
@@ -768,7 +768,7 @@
       <h1>The Right Place for <span>Online Trading</span> on Financial Markets</h1>
       <p>The most convenient trading interface. Instant access to 100+ assets from the world's leading companies, crypto, forex, and stocks.</p>
       <div class="hero-actions">
-        <a href="#" class="btn btn-gold" data-auth-trigger="signup">Get Started Free</a>
+        <a href="login.html?mode=signup" class="btn btn-gold" data-auth-trigger="signup">Get Started Free</a>
         <a href="#about" class="btn btn-outline">Learn More →</a>
       </div>
       <div class="hero-stats">
@@ -986,7 +986,7 @@
           <li><span class="check">✓</span> Copy Trading Access</li>
           <li><span class="check">✓</span> 10% Referral Earnings</li>
         </ul>
-        <a href="#" class="btn btn-outline" data-auth-trigger="signup">Start Now</a>
+        <a href="login.html?mode=signup" class="btn btn-outline" data-auth-trigger="signup">Start Now</a>
       </div>
       <div class="plan-card featured">
         <div class="plan-badge-popular">Most Popular</div>
@@ -1000,7 +1000,7 @@
           <li><span class="check">✓</span> Copy Trading Access</li>
           <li><span class="check">✓</span> 15% Referral Earnings</li>
         </ul>
-        <a href="#" class="btn btn-gold" data-auth-trigger="signup">Start Now</a>
+        <a href="login.html?mode=signup" class="btn btn-gold" data-auth-trigger="signup">Start Now</a>
       </div>
       <div class="plan-card">
         <div class="plan-name">Gold</div>
@@ -1013,7 +1013,7 @@
           <li><span class="check">✓</span> Copy Trading Access</li>
           <li><span class="check">✓</span> 20% Referral Earnings</li>
         </ul>
-        <a href="#" class="btn btn-outline" data-auth-trigger="signup">Start Now</a>
+        <a href="login.html?mode=signup" class="btn btn-outline" data-auth-trigger="signup">Start Now</a>
       </div>
       <div class="plan-card">
         <div class="plan-name">Platinum</div>
@@ -1026,7 +1026,7 @@
           <li><span class="check">✓</span> Copy Trading Access</li>
           <li><span class="check">✓</span> 30% Referral Earnings</li>
         </ul>
-        <a href="#" class="btn btn-outline" data-auth-trigger="signup">Start Now</a>
+        <a href="login.html?mode=signup" class="btn btn-outline" data-auth-trigger="signup">Start Now</a>
       </div>
     </div>
   </div>
@@ -1202,7 +1202,7 @@
     <h2>Ready to Start Growing Your Money?</h2>
     <p>Join 25,000+ traders already using Quadzedge to build wealth through smarter, more confident investing.</p>
     <div class="cta-actions">
-      <a href="#" class="btn btn-gold" style="font-size:15px;padding:14px 32px;" data-auth-trigger="signup">Create Free Account</a>
+      <a href="login.html?mode=signup" class="btn btn-gold" style="font-size:15px;padding:14px 32px;" data-auth-trigger="signup">Create Free Account</a>
       <a href="#" class="btn btn-outline" style="font-size:15px;padding:14px 32px;">Contact Support</a>
     </div>
   </div>
@@ -1277,17 +1277,6 @@
           <div class="auth-modal__benefit">
             <strong>Dedicated admin control</strong>
             <span>Admins sign in and land on their own page to approve, decline, and manage clients.</span>
-          </div>
-        </div>
-        <div class="auth-modal__credentials">
-          <div class="auth-modal__credential-note">Demo access</div>
-          <div class="auth-modal__credential">
-            <strong>Client</strong>
-            <span>ava@zenturocapital.com / Client123!</span>
-          </div>
-          <div class="auth-modal__credential">
-            <strong>Admin</strong>
-            <span>admin@zenturocapital.com / Admin123!</span>
           </div>
         </div>
       </div>
@@ -1459,8 +1448,7 @@
                       <select name="asset">
                         <option value="BTC">Bitcoin (BTC)</option>
                         <option value="ETH">Ethereum (ETH)</option>
-                        <option value="USDT">Tether (USDT - TRC20)</option>
-                        <option value="BNB">BNB Smart Chain (BNB)</option>
+                        <option value="XRP">XRP</option>
                       </select>
                     </label>
                     <label class="dashboard-field">
@@ -1678,6 +1666,8 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js" defer></script>
 <script src="shared.js" defer></script>
 <script src="app.js" defer></script>
 

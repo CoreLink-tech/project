@@ -70,8 +70,7 @@
                     <select name="asset">
                       <option value="BTC">Bitcoin (BTC)</option>
                       <option value="ETH">Ethereum (ETH)</option>
-                      <option value="USDT">Tether (USDT - TRC20)</option>
-                      <option value="BNB">BNB Smart Chain (BNB)</option>
+                      <option value="XRP">XRP</option>
                     </select>
                   </label>
                   <label class="dashboard-field">
@@ -113,7 +112,7 @@
               </div>
             </div>
             <div class="timeline-list">
-              <div class="timeline-item"><div class="timeline-item__title">Choose a supported coin</div><div class="timeline-item__meta">Pick BTC, ETH, USDT, or BNB from the form.</div></div>
+              <div class="timeline-item"><div class="timeline-item__title">Choose a supported coin</div><div class="timeline-item__meta">Pick BTC, ETH, or XRP from the form.</div></div>
               <div class="timeline-item"><div class="timeline-item__title">Copy the wallet address</div><div class="timeline-item__meta">Use the checkout screen to copy the exact address for your selected network.</div></div>
               <div class="timeline-item"><div class="timeline-item__title">Notify the admin desk</div><div class="timeline-item__meta">Click “I Have Made Payment” to submit the deposit for approval and balance crediting.</div></div>
             </div>
@@ -132,6 +131,8 @@
     </div>
   </div>
   <div id="clientToast" class="auth-toast" aria-live="polite"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js" defer></script>
   <script src="shared.js" defer></script>
   <script src="client-pages.js" defer></script>
 </body>

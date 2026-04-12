@@ -1,7 +1,6 @@
 const {
   CLIENT_HOME_URL,
   approveClientRequest,
-  clearSession,
   declineClientRequest,
   findUser,
   formatCurrency,
@@ -9,6 +8,10 @@ const {
   getDb,
   publishAnnouncement,
   readSession,
+  resetPasswordWithSupabase,
+  signInWithSupabase,
+  signOutFromSupabase,
+  syncSessionFromSupabase,
   updateClientSettings,
   updateUserStatus
 } = window.ZenturoShared;
@@ -16,6 +19,10 @@ const {
 const $ = selector => document.querySelector(selector);
 const $$ = selector => document.querySelectorAll(selector);
 
+const adminAuthGate = $("#adminAuthGate");
+const adminDashboardShell = $("#adminDashboardShell");
+const adminSigninForm = $("#adminSigninForm");
+const adminSigninMessage = $("#adminSigninMessage");
 const adminAvatar = $("#adminAvatar");
 const adminUserName = $("#adminUserName");
 const adminUserMeta = $("#adminUserMeta");
@@ -32,6 +39,11 @@ const adminClientMessage = $("#adminClientMessage");
 const adminAnnouncementForm = $("#adminAnnouncementForm");
 const adminAnnouncementMessage = $("#adminAnnouncementMessage");
 const adminToast = $("#adminToast");
+
+function toggleAdminView(isAuthenticated) {
+  if (adminAuthGate) adminAuthGate.style.display = isAuthenticated ? "none" : "block";
+  if (adminDashboardShell) adminDashboardShell.style.display = isAuthenticated ? "block" : "none";
+}
 
 function showToast(message) {
   adminToast.textContent = message;
@@ -68,14 +80,21 @@ function getAdminContext() {
   const db = getDb();
   const user = findUser(db, readSession());
   if (!user) {
-    window.location.href = "index.html";
-    throw new Error("No active session");
+    throw new Error("No active admin session");
   }
   if (user.role !== "admin") {
     window.location.href = user.role === "client" ? CLIENT_HOME_URL : "index.html";
     throw new Error("Non-admin session detected");
   }
   return { db, user };
+}
+
+function setSigninMessage(message, type = "error") {
+  if (!adminSigninMessage) return;
+  adminSigninMessage.textContent = message;
+  adminSigninMessage.className = "login-message";
+  if (type === "info") adminSigninMessage.classList.add("info");
+  if (type === "success") adminSigninMessage.classList.add("success");
 }
 
 function populateAdminClientForm(userId, db) {
@@ -94,34 +113,50 @@ function populateAdminClientForm(userId, db) {
 
 function attachActions() {
   $$("[data-approve-user]").forEach(button => {
-    button.addEventListener("click", () => {
-      const result = updateUserStatus(button.dataset.approveUser, "approved");
-      if (result) showToast(`${result.user.name} approved.`);
-      renderAdminPage();
+    button.addEventListener("click", async () => {
+      try {
+        const result = await updateUserStatus(button.dataset.approveUser, "approved");
+        if (result) showToast(`${result.user.name} approved.`);
+        renderAdminPage();
+      } catch (error) {
+        showToast(error?.message || "We could not approve this client.");
+      }
     });
   });
 
   $$("[data-suspend-user]").forEach(button => {
-    button.addEventListener("click", () => {
-      const result = updateUserStatus(button.dataset.suspendUser, "suspended");
-      if (result) showToast(`${result.user.name} suspended.`);
-      renderAdminPage();
+    button.addEventListener("click", async () => {
+      try {
+        const result = await updateUserStatus(button.dataset.suspendUser, "suspended");
+        if (result) showToast(`${result.user.name} suspended.`);
+        renderAdminPage();
+      } catch (error) {
+        showToast(error?.message || "We could not suspend this client.");
+      }
     });
   });
 
   $$("[data-approve-request]").forEach(button => {
-    button.addEventListener("click", () => {
-      const result = approveClientRequest(button.dataset.approveRequest);
-      if (result) showToast(`${result.request.type} request approved.`);
-      renderAdminPage();
+    button.addEventListener("click", async () => {
+      try {
+        const result = await approveClientRequest(button.dataset.approveRequest);
+        if (result) showToast(`${result.request.type} request approved.`);
+        renderAdminPage();
+      } catch (error) {
+        showToast(error?.message || "We could not approve this request.");
+      }
     });
   });
 
   $$("[data-decline-request]").forEach(button => {
-    button.addEventListener("click", () => {
-      const result = declineClientRequest(button.dataset.declineRequest);
-      if (result) showToast(`${result.request.type} request declined.`);
-      renderAdminPage();
+    button.addEventListener("click", async () => {
+      try {
+        const result = await declineClientRequest(button.dataset.declineRequest);
+        if (result) showToast(`${result.request.type} request declined.`);
+        renderAdminPage();
+      } catch (error) {
+        showToast(error?.message || "We could not decline this request.");
+      }
     });
   });
 }
@@ -221,29 +256,33 @@ adminClientSelect.addEventListener("change", event => {
   clearMessage(adminClientMessage);
 });
 
-adminClientForm.addEventListener("submit", event => {
+adminClientForm.addEventListener("submit", async event => {
   event.preventDefault();
   clearMessage(adminClientMessage);
   const clientId = adminClientForm.elements.clientId.value;
-  const result = updateClientSettings(clientId, {
-    name: String(adminClientForm.elements.name.value || "").trim(),
-    plan: adminClientForm.elements.plan.value,
-    status: adminClientForm.elements.status.value,
-    balance: Number(adminClientForm.elements.balance.value || 0),
-    performance: Number(adminClientForm.elements.performance.value || 0),
-    kyc: adminClientForm.elements.kyc.value,
-    note: String(adminClientForm.elements.note.value || "").trim()
-  });
-  if (!result) {
+  if (!clientId) {
     setMessage(adminClientMessage, "Select a client to update.");
     return;
   }
-  setMessage(adminClientMessage, "Client settings saved successfully.", "info");
-  showToast("Client settings updated.");
-  renderAdminPage();
+  try {
+    await updateClientSettings(clientId, {
+      name: String(adminClientForm.elements.name.value || "").trim(),
+      plan: adminClientForm.elements.plan.value,
+      status: adminClientForm.elements.status.value,
+      balance: Number(adminClientForm.elements.balance.value || 0),
+      performance: Number(adminClientForm.elements.performance.value || 0),
+      kyc: adminClientForm.elements.kyc.value,
+      note: String(adminClientForm.elements.note.value || "").trim()
+    });
+    setMessage(adminClientMessage, "Client settings saved successfully.", "info");
+    showToast("Client settings updated.");
+    renderAdminPage();
+  } catch (error) {
+    setMessage(adminClientMessage, error?.message || "We could not update this client.");
+  }
 });
 
-adminAnnouncementForm.addEventListener("submit", event => {
+adminAnnouncementForm.addEventListener("submit", async event => {
   event.preventDefault();
   clearMessage(adminAnnouncementMessage);
   const headline = String(adminAnnouncementForm.elements.headline.value || "").trim();
@@ -252,20 +291,94 @@ adminAnnouncementForm.addEventListener("submit", event => {
     setMessage(adminAnnouncementMessage, "Add both a headline and message for the broadcast.");
     return;
   }
-  publishAnnouncement(headline, message);
-  setMessage(adminAnnouncementMessage, "Announcement published to all client dashboards.", "info");
-  showToast("Announcement published.");
-  adminAnnouncementForm.reset();
-  renderAdminPage();
+  try {
+    await publishAnnouncement(headline, message);
+    setMessage(adminAnnouncementMessage, "Announcement published to all client dashboards.", "info");
+    showToast("Announcement published.");
+    adminAnnouncementForm.reset();
+    renderAdminPage();
+  } catch (error) {
+    setMessage(adminAnnouncementMessage, error?.message || "We could not publish this announcement.");
+  }
 });
 
 $("#adminHomeBtn").addEventListener("click", () => {
   window.location.href = "index.html";
 });
 
-$("#adminSignOutBtn").addEventListener("click", () => {
-  clearSession();
-  window.location.href = "index.html";
+$("#adminSignOutBtn").addEventListener("click", async () => {
+  await signOutFromSupabase();
+  toggleAdminView(false);
+  setSigninMessage("Signed out. Sign in again to reopen the admin desk.", "info");
 });
 
-renderAdminPage();
+if (adminSigninForm) {
+  adminSigninForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    setSigninMessage("");
+
+    const formData = new FormData(adminSigninForm);
+    const email = String(formData.get("email") || "").trim().toLowerCase();
+    const password = String(formData.get("password") || "").trim();
+    const remember = Boolean(formData.get("remember"));
+
+    if (!email || !password) {
+      setSigninMessage("Enter your admin email and password.");
+      return;
+    }
+
+    try {
+      const { user } = await signInWithSupabase(email, password, remember);
+      if (user.role !== "admin") {
+        await signOutFromSupabase();
+        setSigninMessage("That account is not an admin account.");
+        return;
+      }
+      adminSigninForm.reset();
+      toggleAdminView(true);
+      renderAdminPage();
+    } catch (error) {
+      setSigninMessage(error?.message || "Admin sign in failed.");
+    }
+  });
+}
+
+$("#adminForgotPasswordBtn")?.addEventListener("click", async () => {
+  const email = String(adminSigninForm?.elements?.email?.value || "").trim().toLowerCase();
+  if (!email) {
+    setSigninMessage("Enter your admin email first.");
+    return;
+  }
+
+  try {
+    await resetPasswordWithSupabase(email);
+    setSigninMessage(`Password reset instructions sent to ${email}.`, "info");
+  } catch (error) {
+    setSigninMessage(error?.message || "We could not send a reset email right now.");
+  }
+});
+
+$("#adminBackToLoginBtn")?.addEventListener("click", () => {
+  window.location.href = "login.html";
+});
+
+async function init() {
+  try {
+    const user = await syncSessionFromSupabase();
+    if (user?.role === "admin") {
+      toggleAdminView(true);
+      renderAdminPage();
+      return;
+    }
+    if (user?.role === "client") {
+      window.location.href = CLIENT_HOME_URL;
+      return;
+    }
+  } catch (error) {
+    setSigninMessage(error?.message || "We could not restore the admin session.");
+  }
+
+  toggleAdminView(false);
+}
+
+void init();

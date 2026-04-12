@@ -1,14 +1,15 @@
 const {
   ADMIN_HOME_URL,
   CRYPTO_WALLETS,
-  clearSession,
   findUser,
   formatCurrency,
   formatDate,
   getDb,
   readSession,
+  signOutFromSupabase,
   submitDepositRequest,
   submitWithdrawalRequest,
+  syncSessionFromSupabase,
   updateClientProfile
 } = window.ZenturoShared;
 
@@ -259,15 +260,19 @@ function renderDepositPage(db, user) {
     }
   });
 
-  confirmBtn.addEventListener("click", () => {
+  confirmBtn.addEventListener("click", async () => {
     if (!draft) return;
-    submitDepositRequest(user.id, {
-      asset: draft.asset,
-      amount: draft.amount,
-      notes: draft.notes
-    });
-    showToast("Deposit proof submitted to the admin desk.");
-    window.location.reload();
+    try {
+      await submitDepositRequest(user.id, {
+        asset: draft.asset,
+        amount: draft.amount,
+        notes: draft.notes
+      });
+      showToast("Deposit proof submitted to the admin desk.");
+      window.location.reload();
+    } catch (error) {
+      setMessage(message, error?.message || "We could not submit this deposit right now.");
+    }
   });
 }
 
@@ -287,7 +292,7 @@ function renderWithdrawalPage(db, user) {
     setMessage(message, "Withdrawals unlock after your account is approved.", "info");
   }
 
-  form.addEventListener("submit", event => {
+  form.addEventListener("submit", async event => {
     event.preventDefault();
     clearMessage(message);
     if (disable) return;
@@ -303,9 +308,13 @@ function renderWithdrawalPage(db, user) {
       setMessage(message, "The requested withdrawal amount cannot be greater than your available balance.");
       return;
     }
-    submitWithdrawalRequest(user.id, { amount, notes });
-    showToast("Withdrawal request submitted to the admin desk.");
-    window.location.reload();
+    try {
+      await submitWithdrawalRequest(user.id, { amount, notes });
+      showToast("Withdrawal request submitted to the admin desk.");
+      window.location.reload();
+    } catch (error) {
+      setMessage(message, error?.message || "We could not submit this withdrawal right now.");
+    }
   });
 }
 
@@ -350,7 +359,7 @@ function renderSettingsPage(user) {
   form.elements.status.value = user.status;
   form.elements.kyc.value = user.kyc;
 
-  form.addEventListener("submit", event => {
+  form.addEventListener("submit", async event => {
     event.preventDefault();
     clearMessage(message);
     const name = String(form.elements.name.value || "").trim();
@@ -371,9 +380,13 @@ function renderSettingsPage(user) {
       return;
     }
 
-    updateClientProfile(user.id, { name, email, password });
-    setMessage(message, "Profile updated successfully.", "info");
-    showToast("Account settings saved.");
+    try {
+      await updateClientProfile(user.id, { name, email, password });
+      setMessage(message, "Profile updated successfully.", "info");
+      showToast("Account settings saved.");
+    } catch (error) {
+      setMessage(message, error?.message || "We could not save your settings right now.");
+    }
   });
 }
 
@@ -381,13 +394,14 @@ function bindGlobalActions() {
   $("#clientHomeBtn")?.addEventListener("click", () => {
     window.location.href = "index.html";
   });
-  $("#clientSignOutBtn")?.addEventListener("click", () => {
-    clearSession();
+  $("#clientSignOutBtn")?.addEventListener("click", async () => {
+    await signOutFromSupabase();
     window.location.href = "index.html";
   });
 }
 
-function init() {
+async function init() {
+  await syncSessionFromSupabase();
   const { db, user } = getCurrentContext();
   renderSidebar(user);
   renderHeader(user);
@@ -403,4 +417,4 @@ function init() {
   if (page === "settings") renderSettingsPage(user);
 }
 
-init();
+void init();
